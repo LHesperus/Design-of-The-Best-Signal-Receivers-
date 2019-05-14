@@ -1,0 +1,8 @@
+v1
+DSP_BALANCING_IMPLEMENTATION,DSP_BLOCKS,mul_12_14:inst3|lpm_mult:lpm_mult_component|mult_cms:auto_generated|mac_out1,
+DSP_BALANCING_IMPLEMENTATION,DSP_BLOCKS,mul_12_14:inst2|lpm_mult:lpm_mult_component|mult_cms:auto_generated|mac_out1,
+DSP_BALANCING_IMPLEMENTATION,DSP_BLOCKS,NCO1:inst|NCO1_st:NCO1_st_inst|asj_nco_madx_cen:m1|altmult_add:ALTMULT_ADD_component|mult_add_5nb2:auto_generated|mac_out3,
+DSP_BALANCING_IMPLEMENTATION,DSP_BLOCKS,NCO1:inst|NCO1_st:NCO1_st_inst|asj_nco_mady_cen:m0|altmult_add:ALTMULT_ADD_component|mult_add_4mb2:auto_generated|mac_out3,
+REGISTER_PACKING,REG_PACK_TYPE_FINISHED,ADATA,0,AD1_CLK,AD1_CLK,
+PORT_SWAPPING,PORT_SWAP_TYPE_DSPMULT,mul_12_14:inst2|lpm_mult:lpm_mult_component|mult_cms:auto_generated|mac_mult2,
+PORT_SWAPPING,PORT_SWAP_TYPE_DSPMULT,mul_12_14:inst3|lpm_mult:lpm_mult_component|mult_cms:auto_generated|mac_mult2,

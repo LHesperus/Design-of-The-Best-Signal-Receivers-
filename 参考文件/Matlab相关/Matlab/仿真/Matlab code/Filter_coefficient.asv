@@ -1,0 +1,13 @@
+Num=Num/max(abs(Num));
+Num=Num*(2^7-1);
+Num=floor(Num);
+a0=Num(1,1:4:64);
+a1=Num(1,2:4:64);
+a2=Num(1,3:4:64);
+a3=Num(1,4:4:64);
+
+sym(a0)
+sym(a1_coef)
+sym(a2_coef)
+sym(a3)
+

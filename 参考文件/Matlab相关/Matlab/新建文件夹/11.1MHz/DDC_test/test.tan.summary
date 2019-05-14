@@ -1,0 +1,156 @@
+--------------------------------------------------------------------------------------
+Timing Analyzer Summary
+--------------------------------------------------------------------------------------
+
+Type           : Worst-case tsu
+Slack          : N/A
+Required Time  : None
+Actual Time    : 7.931 ns
+From           : ADC1_D[1]
+To             : mul_12_14:inst2|lpm_mult:lpm_mult_component|mult_cms:auto_generated|mac_mult2~OBSERVABLEDATAA_REGOUT1
+From Clock     : --
+To Clock       : clk_25M
+Failed Paths   : 0
+
+Type           : Worst-case tco
+Slack          : N/A
+Required Time  : None
+Actual Time    : 7.694 ns
+From           : hb2:inst8|hb2_ast:hb2_ast_inst|auk_dspip_avalon_streaming_source_fir_81:source|at_source_data[17]
+To             : h2_out[17]
+From Clock     : clk_25M
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case tpd
+Slack          : N/A
+Required Time  : None
+Actual Time    : 2.267 ns
+From           : altera_internal_jtag~TDO
+To             : altera_reserved_tdo
+From Clock     : --
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case th
+Slack          : N/A
+Required Time  : None
+Actual Time    : 0.756 ns
+From           : altera_internal_jtag~TDIUTAP
+To             : sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|lpm_shiftreg:status_register|dffs[16]
+From Clock     : --
+To Clock       : altera_internal_jtag~TCKUTAP
+Failed Paths   : 0
+
+Type           : Clock Setup: 'pll1:inst1|altpll:altpll_component|_clk0'
+Slack          : 200.979 ns
+Required Time  : 4.80 MHz ( period = 208.333 ns )
+Actual Time    : 135.98 MHz ( period = 7.354 ns )
+From           : NCO1:inst|NCO1_st:NCO1_st_inst|asj_altqmcpipe:ux000|lpm_add_sub:acc|add_sub_sbh:auto_generated|pipeline_dffe[6]
+To             : NCO1:inst|NCO1_st:NCO1_st_inst|asj_dxx:ux002|lpm_add_sub:ux014|add_sub_m4h:auto_generated|pipeline_dffe[20]
+From Clock     : pll1:inst1|altpll:altpll_component|_clk0
+To Clock       : pll1:inst1|altpll:altpll_component|_clk0
+Failed Paths   : 0
+
+Type           : Clock Setup: 'pll1:inst1|altpll:altpll_component|_clk1'
+Slack          : 205.069 ns
+Required Time  : 2.40 MHz ( period = 416.666 ns )
+Actual Time    : N/A
+From           : decimation_2:inst6|data_out[6]
+To             : hb2:inst8|hb2_ast:hb2_ast_inst|auk_dspip_avalon_streaming_sink_fir_81:sink|at_sink_data_int[6]
+From Clock     : pll1:inst1|altpll:altpll_component|_clk0
+To Clock       : pll1:inst1|altpll:altpll_component|_clk1
+Failed Paths   : 0
+
+Type           : Clock Setup: 'pll1:inst1|altpll:altpll_component|_clk2'
+Slack          : 413.294 ns
+Required Time  : 1.20 MHz ( period = 833.333 ns )
+Actual Time    : N/A
+From           : decimation_2:inst10|data_out[13]
+To             : FIR:inst12|FIR_ast:FIR_ast_inst|auk_dspip_avalon_streaming_sink_fir_81:sink|at_sink_data_int[13]
+From Clock     : pll1:inst1|altpll:altpll_component|_clk1
+To Clock       : pll1:inst1|altpll:altpll_component|_clk2
+Failed Paths   : 0
+
+Type           : Clock Setup: 'altera_internal_jtag~TCKUTAP'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 124.75 MHz ( period = 8.016 ns )
+From           : sld_hub:sld_hub_inst|irf_reg[2][3]
+To             : sld_hub:sld_hub_inst|tdo
+From Clock     : altera_internal_jtag~TCKUTAP
+To Clock       : altera_internal_jtag~TCKUTAP
+Failed Paths   : 0
+
+Type           : Clock Setup: 'auto_stp_external_clock_0'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 169.92 MHz ( period = 5.885 ns )
+From           : sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_ela_control:ela_control|sld_ela_basic_multi_level_trigger:\basic_multi_level_mbpm_trigger_gen:multi_level_mbpm|sld_mbpmg:\trigger_modules_gen:0:trigger_match|sld_sbpmg:\gen_sbpmg_pipeline_less_than_two:sm0:112:sm1|regoutff
+To             : sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_ela_control:ela_control|sld_ela_trigger_flow_mgr:\builtin:ela_trigger_flow_mgr_entity|last_level_delayed
+From Clock     : auto_stp_external_clock_0
+To Clock       : auto_stp_external_clock_0
+Failed Paths   : 0
+
+Type           : Clock Setup: 'altera_internal_jtag~CLKDRUSER'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 448.83 MHz ( period = 2.228 ns )
+From           : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|VELJ8121:JDCF0099|AJQN5180[0]
+To             : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|VELJ8121:JDCF0099|AJQN5180[4]
+From Clock     : altera_internal_jtag~CLKDRUSER
+To Clock       : altera_internal_jtag~CLKDRUSER
+Failed Paths   : 0
+
+Type           : Clock Setup: 'altera_internal_jtag~UPDATEUSER'
+Slack          : N/A
+Required Time  : None
+Actual Time    : Restricted to 711.24 MHz ( period = 1.406 ns )
+From           : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|XWDE0671[2]
+To             : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|XWDE0671[1]
+From Clock     : altera_internal_jtag~UPDATEUSER
+To Clock       : altera_internal_jtag~UPDATEUSER
+Failed Paths   : 0
+
+Type           : Clock Hold: 'pll1:inst1|altpll:altpll_component|_clk0'
+Slack          : 0.393 ns
+Required Time  : 4.80 MHz ( period = 208.333 ns )
+Actual Time    : N/A
+From           : hb1:inst5|hb1_ast:hb1_ast_inst|auk_dspip_avalon_streaming_sink_fir_81:sink|scfifo:\normal_fifo:fifo_eab_on:in_fifo|scfifo_eah1:auto_generated|a_dpfifo_7l81:dpfifo|rd_ptr_lsb
+To             : hb1:inst5|hb1_ast:hb1_ast_inst|auk_dspip_avalon_streaming_sink_fir_81:sink|scfifo:\normal_fifo:fifo_eab_on:in_fifo|scfifo_eah1:auto_generated|a_dpfifo_7l81:dpfifo|rd_ptr_lsb
+From Clock     : pll1:inst1|altpll:altpll_component|_clk0
+To Clock       : pll1:inst1|altpll:altpll_component|_clk0
+Failed Paths   : 0
+
+Type           : Clock Hold: 'pll1:inst1|altpll:altpll_component|_clk1'
+Slack          : 0.393 ns
+Required Time  : 2.40 MHz ( period = 416.666 ns )
+Actual Time    : N/A
+From           : hb2:inst9|hb2_ast:hb2_ast_inst|auk_dspip_avalon_streaming_sink_fir_81:sink|scfifo:\normal_fifo:fifo_eab_on:in_fifo|scfifo_gah1:auto_generated|a_dpfifo_9l81:dpfifo|rd_ptr_lsb
+To             : hb2:inst9|hb2_ast:hb2_ast_inst|auk_dspip_avalon_streaming_sink_fir_81:sink|scfifo:\normal_fifo:fifo_eab_on:in_fifo|scfifo_gah1:auto_generated|a_dpfifo_9l81:dpfifo|rd_ptr_lsb
+From Clock     : pll1:inst1|altpll:altpll_component|_clk1
+To Clock       : pll1:inst1|altpll:altpll_component|_clk1
+Failed Paths   : 0
+
+Type           : Clock Hold: 'pll1:inst1|altpll:altpll_component|_clk2'
+Slack          : 0.393 ns
+Required Time  : 1.20 MHz ( period = 833.333 ns )
+Actual Time    : N/A
+From           : FIR:inst13|FIR_ast:FIR_ast_inst|auk_dspip_avalon_streaming_sink_fir_81:sink|scfifo:\normal_fifo:fifo_eab_on:in_fifo|scfifo_gah1:auto_generated|a_dpfifo_9l81:dpfifo|rd_ptr_lsb
+To             : FIR:inst13|FIR_ast:FIR_ast_inst|auk_dspip_avalon_streaming_sink_fir_81:sink|scfifo:\normal_fifo:fifo_eab_on:in_fifo|scfifo_gah1:auto_generated|a_dpfifo_9l81:dpfifo|rd_ptr_lsb
+From Clock     : pll1:inst1|altpll:altpll_component|_clk2
+To Clock       : pll1:inst1|altpll:altpll_component|_clk2
+Failed Paths   : 0
+
+Type           : Total number of failed paths
+Slack          : 
+Required Time  : 
+Actual Time    : 
+From           : 
+To             : 
+From Clock     : 
+To Clock       : 
+Failed Paths   : 0
+
+--------------------------------------------------------------------------------------
+
