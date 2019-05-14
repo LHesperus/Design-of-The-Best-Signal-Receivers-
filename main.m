@@ -22,12 +22,21 @@ len=length(s);
 figure
 plot(t,real(s))
 figure
+plot(t,imag(s))
+figure
 f=fs*(-len/2+1:len/2)/len;
-plot(f,abs(fftshift(fft(real(s)))))
+plot(f,abs(fftshift(fft((s)))))
 
-%% 
+%% DDC
+% NCO
 NCO_I=cos(2*pi*fc/fs*(0:len-1)); 
 NCO_Q=sin(2*pi*fc/fs*(0:len-1));
 aaa=NCO_Q.*real(s);
-%plot(NCO_Q.*real(s))
+figure
+plot(NCO_Q.*real(s))
 %plot(abs(fftshift(fft(aaa))))
+% LPF
+Hd=DDC_Lowpass64;
+output=filter(Hd,-NCO_Q.*real(s));
+figure
+plot(output)
