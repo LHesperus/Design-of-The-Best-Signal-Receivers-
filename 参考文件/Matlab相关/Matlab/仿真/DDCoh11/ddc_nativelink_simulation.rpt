@@ -1,0 +1,16 @@
+Info: Start Nativelink Simulation process
+Error: You did not generate the simulation model files or you generated the IP file using an older version of MegaCore which is not supported by RTL NativeLink Simulation
+Error: Regenerate the IP and simulation model files using the latest version of MegaCore for RTL NativeLink Simulation flow to function correctly
+Error: NativeLink simulation flow was NOT successful
+
+
+
+================The following additional information is provided to help identify the cause of error while running nativelink scripts=================
+Nativelink TCL script failed with errorCode:  NONE
+Nativelink TCL script failed with errorInfo:  Regenerate the IP and simulation model files using the latest version of MegaCore for RTL NativeLink Simulation flow to function correctly
+    (procedure "get_ip_info" line 1)
+    invoked from within
+"get_ip_info $full_file_name"
+    (procedure "run_eda_simulation_tool" line 132)
+    invoked from within
+"run_eda_simulation_tool eda_opts_hash"

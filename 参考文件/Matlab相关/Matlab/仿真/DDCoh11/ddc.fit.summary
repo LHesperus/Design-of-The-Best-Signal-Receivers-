@@ -1,0 +1,17 @@
+Fitter Status : Successful - Mon May 27 19:26:44 2013
+Quartus II Version : 9.1 Build 222 10/21/2009 SJ Full Version
+Revision Name : ddc
+Top-level Entity Name : ddc
+Family : Stratix II
+Device : EP2S90F1020I4
+Timing Models : Final
+Logic utilization : < 1 %
+    Combinational ALUTs : 159 / 72,768 ( < 1 % )
+    Dedicated logic registers : 133 / 72,768 ( < 1 % )
+Total registers : 133
+Total pins : 30 / 759 ( 4 % )
+Total virtual pins : 0
+Total block memory bits : 0 / 4,520,448 ( 0 % )
+DSP block 9-bit elements : 0 / 384 ( 0 % )
+Total PLLs : 0 / 12 ( 0 % )
+Total DLLs : 0 / 2 ( 0 % )

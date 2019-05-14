@@ -1,0 +1,211 @@
+
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+Jun 23 09AM:16:26>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+Jun 23 09AM:16:34>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.v
+
+May 09 04PM:06:09>: Error in CNX file format.
+
+Error messages are listed in file
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.cnxerr.
+
+Can't create the custom megafunction variation file(s)
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+May 09 04PM:06:13>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+May 09 04PM:06:14>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:10:55>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:10:57>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:11:00>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:11:14>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:12:03>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:12:05>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:12:27>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:12:28>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/hb2.v
+
+May 09 04PM:12:41>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/hb2.v
+
+May 09 04PM:12:42>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/hb1.v
+
+May 09 04PM:12:45>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/hb1.v
+
+May 09 04PM:12:53>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/hb1.v
+
+May 09 04PM:12:55>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.v
+
+May 09 04PM:15:24>: Error in CNX file format.
+
+Error messages are listed in file
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.cnxerr.
+
+Can't create the custom megafunction variation file(s)
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.v
+
+May 09 04PM:17:36>: Error in CNX file format.
+
+Error messages are listed in file
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.cnxerr.
+
+Can't create the custom megafunction variation file(s)
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.v
+
+May 09 04PM:18:07>: Error in CNX file format.
+
+Error messages are listed in file
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.cnxerr.
+
+Can't create the custom megafunction variation file(s)
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+May 09 04PM:20:35>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+May 09 04PM:20:36>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+May 09 04PM:21:08>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+May 09 04PM:21:19>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+May 09 04PM:21:34>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/NCO1.v
+
+May 09 04PM:21:36>: Megafunction NCO v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:43:37>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:43:45>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:43:46>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:43:50>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:44:07>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:45:54>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/FIR.v
+
+May 09 04PM:45:55>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/hb2.v
+
+May 09 04PM:46:04>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/hb2.v
+
+May 09 04PM:46:18>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/hb1.v
+
+May 09 04PM:46:24>: Megafunction FIR Compiler v8.1 is not listed in any 
+wizard.lst file in the specified library path(s).Wizard launch aborted
+
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.v
+
+May 09 04PM:48:24>: Error in CNX file format.
+
+Error messages are listed in file
+C:/Users/RadarC508/Desktop/11.1MHz/DDC_test/pll1.cnxerr.
+
+Can't create the custom megafunction variation file(s)
