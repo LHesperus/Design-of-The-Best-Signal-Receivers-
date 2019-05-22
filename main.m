@@ -3,7 +3,7 @@ close all
 clear all
 %% Parameter
 D=4;
-lmd=3e-2;
+lambda=3e-2;
 v=680;
 R=20e3;
 
@@ -47,8 +47,21 @@ subplot(2,1,1)
 plot(t,I_rec_extend);title('I-LFM with 16 period')
 subplot(2,1,2)
 plot(t,Q_rec_extend);title('Q-LFM with 16 period')
-%% 
 
+
+
+
+%% Gauss Channel
+SNR=30;
+IQ_rec=awgn(I_rec+Q_rec*j,SNR,'measured');
+I_rec=real(IQ_rec);
+Q_rec=imag(IQ_rec);
+
+%% Doppler
+f_d=2*v/lambda; %Doppler freq
+IQ_rec=IQ_rec.*exp(j*2*pi*f_d*t);
+I_rec=real(IQ_rec);
+Q_rec=imag(IQ_rec);
 
 %% lowpass filter
 Hd = lowpass63;
@@ -101,6 +114,7 @@ I_4rec(4,:)=I_rec(4:4:end);%D
 %% nco-lowpass-down sample-conv 
 I_D=[conv(I_4rec(1,:),hA) 0 0 0]+[0 0 conv(I_4rec(3,:),hB) 0];
 Q_D=[0 conv(I_4rec(2,:),hC) 0 0]+[0 0 0 conv(I_4rec(4,:),hD)];
+
 % I_D=[conv(I_4rec(1,:),hA) ]+[conv(I_4rec(3,:),hB)];
 % Q_D=[conv(I_4rec(2,:),hC) ]+[ conv(I_4rec(4,:),hD)];
 len_D=length(I_D);
@@ -115,3 +129,101 @@ figure
 plot(f,abs(fftshift(fft(I_rec))));title('LFM IF Spectrum')
 figure
 plot(f_D,abs(fftshift(fft(I_D+Q_D*j))));title('LFM baseband Spectrum')
+
+
+
+%% pulse compression(PC)
+[h,t_h]=genLFM(fs/D,0,B,T);
+h=conj(h);    
+PC_I_output=conv(real(h),I_D)-conv(imag(h),Q_D);
+PC_Q_output=conv(imag(h),I_D)+conv(real(h),Q_D);
+
+figure
+subplot(3,1,1)
+plot(PC_I_output);title(' I LFM after pulse compression')
+subplot(3,1,2)
+plot(PC_Q_output);title(' Q LFM after pulse compression')
+subplot(3,1,3)
+PC_IQ=PC_I_output+PC_Q_output*j;
+plot(abs(PC_IQ));title(' Ampltitude of  LFM after pulse compression')
+
+
+
+%% MTI
+mti_len=round(Prf*fs/D);
+PC_matrix=zeros(Prf_N,mti_len);
+for ii=1: Prf_N
+   PC_matrix(ii,:)=PC_IQ((ii-1)*mti_len+1:ii*mti_len);
+end
+
+figure
+plot(abs(sum(PC_matrix)));title('PC_sum');
+
+MTI=zeros(Prf_N-2,mti_len);
+
+for ii=1:Prf_N-2
+   MTI(ii,:)=PC_matrix(ii+2,:)-2*PC_matrix(ii+1,:)+PC_matrix(ii,:);
+   MTI_OUT((ii-1)*mti_len+1:ii*mti_len)=PC_matrix(ii+2,:)-2*PC_matrix(ii+1,:)+PC_matrix(ii,:);
+
+end
+figure
+plot(abs(MTI_OUT(1,:)));title('MTI_OUT')
+figure
+subplot(2,1,1)
+plot(real(MTI_OUT))
+subplot(2,1,2)
+plot(imag(MTI_OUT))
+suptitle('MTI IQ OUT')
+
+%% Coherent accumulation (if f_d=0,then MTI_AC withou peak)  To suppress fixed targets
+ MTI_AC=0;
+for ii=1:Prf_N-2
+    MTI_AC=MTI_AC+MTI(ii,:);
+end
+figure
+subplot(3,1,1)
+plot(abs(MTI_AC));title('pulse accumulation')
+
+%% CA-CFAR
+% CA-CFAR
+alpha=0.5;beta=0.5;
+%GOCA-CFAR
+%alpha=1;beta=0;
+%SOCA-CFAR
+%alpha=0;beta=1;
+protect_len=3;                           %length of protect unit   
+ref_len=8;                               %length of refenerce unit
+MTD=abs(MTI_AC);
+MTD_len=length(MTD);
+CAFR=zeros(1,MTD_len);
+
+%  input data stream [ref protect data protect ref],out CAFR
+for ii=1:protect_len+1
+    CAFR(ii)=(alpha+beta)*mean(MTD(ii+protect_len+1:ii+1+protect_len+ref_len));
+end
+
+for ii=protect_len+2:protect_len+ref_len
+    X=mean(MTD(1:ii-protect_len-1));
+    Y=mean(MTD(ii+ref_len+1:ii+ref_len+protect_len+1));
+    CAFR(ii)=alpha*max(X,Y)+beta*min(X,Y);
+end
+
+for ii=protect_len+ref_len+1:MTD_len-protect_len-ref_len-1
+    X=mean(MTD(ii-protect_len-ref_len:ii-protect_len-1));
+    Y=mean(MTD(ii+ref_len+1:ii+ref_len+protect_len+1));
+    CAFR(ii)=alpha*max(X,Y)+beta*min(X,Y);
+end
+
+for ii=MTD_len-protect_len-ref_len:MTD_len-protect_len
+    X=mean(MTD(ii-protect_len-ref_len:ii-protect_len-1));
+    Y=mean(MTD(ii+ref_len+1:end));
+    CAFR(ii)=alpha*max(X,Y)+beta*min(X,Y);
+end
+for ii=MTD_len-protect_len+1:MTD_len
+    CAFR(ii)=(alpha+beta)*mean(MTD(ii-protect_len-ref_len:ii-protect_len-1));
+end
+
+subplot(3,1,2)
+plot(CAFR);title('CA-CAFR threshold,protect_len=3 ,ref_len=8,alpha=0.5,beta=0.5,');
+subplot(3,1,3)
+plot(abs(CAFR-MTD));title('Judgment result')
