@@ -6,7 +6,7 @@ D=4;
 lambda=3e-2;
 v=680;
 R=20e3;
-
+c=3e8;
 j=sqrt(-1);
 Prf_N=16;
 Prf=51.2e-6;
@@ -33,8 +33,10 @@ Q_rec=imag(s);
 len_ex=round(Prf*fs);
 I_rec_extend=zeros(1,len_ex);
 Q_rec_extend=zeros(1,len_ex);
-I_rec_extend(round(len_ex/2-len/2):round(len_ex/2+len/2)-1)=I_rec;
-Q_rec_extend(round(len_ex/2-len/2):round(len_ex/2+len/2)-1)=Q_rec;
+%I_rec_extend(round(len_ex/2-len/2):round(len_ex/2+len/2)-1)=I_rec;
+%Q_rec_extend(round(len_ex/2-len/2):round(len_ex/2+len/2)-1)=Q_rec;
+I_rec_extend(1:len)=I_rec;
+Q_rec_extend(1:len)=Q_rec;
 I_rec_extend=repmat(I_rec_extend,1,Prf_N);
 Q_rec_extend=repmat(Q_rec_extend,1,Prf_N);
 I_rec=I_rec_extend;
@@ -63,6 +65,24 @@ IQ_rec=IQ_rec.*exp(j*2*pi*f_d*t);
 I_rec=real(IQ_rec);
 Q_rec=imag(IQ_rec);
 
+figure
+plot(abs(IQ_rec))
+%% ECHO
+R=0;   %this code need t_echo<Prf
+t_echo=round(2*R/c*fs);
+IQ_rec=[zeros(1,t_echo),IQ_rec(1:end-t_echo)];
+I_rec=real(IQ_rec);
+Q_rec=imag(IQ_rec);
+
+
+figure
+subplot(2,1,1)
+plot(I_rec)
+subplot(2,1,2)
+plot(Q_rec)
+title('echo')
+figure
+plot(abs(IQ_rec))
 %% lowpass filter
 Hd = lowpass63;
 h=Hd.Numerator;
@@ -226,4 +246,4 @@ end
 subplot(3,1,2)
 plot(CAFR);title('CA-CAFR threshold,protect_len=3 ,ref_len=8,alpha=0.5,beta=0.5,');
 subplot(3,1,3)
-plot(abs(CAFR-MTD));title('Judgment result')
+plot(MTD-3*CAFR);title('Judgment result')
