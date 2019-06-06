@@ -2,11 +2,11 @@
 ## UESTC KB516 立人楼A406
 
 
-*[FPGA]-my FPGA code
-*[matlab]-my Matlab code
-*[photo]-some sim wav and Schematic diagram
-*[参考文件]-助教给的参考资料
-*[报告PPT]-提交的报告与汇报PPT,.lcg
+*[FPGA]-my FPGA code <br>
+*[matlab]-my Matlab code <br>
+*[photo]-some sim wav and Schematic diagram <br>
+*[参考文件]-助教给的参考资料 <br>
+*[报告PPT]-提交的报告与汇报PPT,.lcg <br>
 
 ## 主要的参考文件
 在[参考文件/参考资料]和[参考文件/相关文档中]
