@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="MultiFunctionSampProc">
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|DAC_TABLE:DAC_TABLE_DAC3|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_nj91.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|UART_RXD:UART_RXD_A|FIFO8x2048:FIFO8x2048_UART_RXD|scfifo:scfifo_component" CBX_FILE_NAME="scfifo_0d31.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|altdpram:\stp_non_zero_ram_gen:attribute_mem_gen:attribute_mem|lpm_decode:wdecoder" CBX_FILE_NAME="decode_trf.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|LPM_COUNTER:status_read_pointer_counter" CBX_FILE_NAME="cntr_ivi.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|DAC_TABLE:DAC_TABLE_DAC4|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_nj91.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|UART_RXD:UART_RXD_B|FIFO8x2048:FIFO8x2048_UART_RXD|scfifo:scfifo_component" CBX_FILE_NAME="scfifo_0d31.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|LPM_COUNTER:read_pointer_counter" CBX_FILE_NAME="cntr_06j.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|DAC_TABLE:DAC_TABLE_DAC1|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_nj91.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|UART_TXD:UART_TXD_A|FIFO8x2048:FIFO8x2048_UART_TXD|scfifo:scfifo_component" CBX_FILE_NAME="scfifo_0d31.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|altsyncram:\stp_non_zero_ram_gen:stp_buffer_ram" CBX_FILE_NAME="altsyncram_d3p3.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|LPM_COUNTER:status_advance_pointer_counter" CBX_FILE_NAME="cntr_uci.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|DAC_TABLE:DAC_TABLE_DAC2|altsyncram:altsyncram_component" CBX_FILE_NAME="altsyncram_nj91.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|UART_TXD:UART_TXD_B|FIFO8x2048:FIFO8x2048_UART_TXD|scfifo:scfifo_component" CBX_FILE_NAME="scfifo_0d31.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|altdpram:\stp_non_zero_ram_gen:attribute_mem_gen:attribute_mem|lpm_mux:mux" CBX_FILE_NAME="mux_bpc.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|MultiFunctionSampProc|sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|LPM_COUNTER:\adv_point_3_and_more:advance_pointer_counter" CBX_FILE_NAME="cntr_6di.tdf"/>
+	</PROJECT>
+</LOG_ROOT>

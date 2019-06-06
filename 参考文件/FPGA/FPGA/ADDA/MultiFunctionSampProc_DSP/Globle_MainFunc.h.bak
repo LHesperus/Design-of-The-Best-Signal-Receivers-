@@ -1,0 +1,1726 @@
+/*--------------------------------------------------------------------------------------
+ *上海宇志通信技术有限公司  www.caspl.cn
+ *--------------------------------------------------------------------------------------
+ *多功能信号源全局主模块函数定义
+ *--------------------------------------------------------------------------------------*/
+
+/*-----------------------------------------延迟函数定义---------------------------------*/
+void delay(Uint32 count)
+{
+   Uint32 i = count;
+   while(i--)
+   {
+     asm(" NOP 1");
+   }
+}
+
+/*---------------------------------------GPS奇偶校验函数定义----------------------------*/
+void GPS_ParityCheck(unsigned char bit[30], unsigned char D29, unsigned char D30, unsigned char bWord2)
+{
+	unsigned int i, j, iVar24 = 0, S_temp, temp;
+
+	for(i=0;i<24;i++)
+	{
+		iVar24 = (iVar24 | (((unsigned int)bit[i])<<(23-i)));
+	}
+ 
+	for(i=0;i<6;i++)
+	{
+		S_temp = (GPS_H[i]&iVar24);
+		
+		temp = 0;
+		for(j=0;j<24;j++)
+		{
+			temp += (S_temp&0x01);
+			S_temp = S_temp>>1;
+		}
+
+		if(temp%2==0)
+		{
+			temp=0;
+		}
+		else
+		{
+			temp=1;
+		}
+
+		if((i==0)||(i==2)||(i==5)) 
+		{
+			temp=temp^D29;
+		}
+		else
+		{
+			temp=temp^D30;
+		}
+
+		bit[24+i] = temp;
+	}
+	
+	if(D30==1 && (bWord2==0 || (bWord2==1 && bit[28]==0 && bit[29]==0)))
+	{
+		for(i=0;i<24;i++)
+		{
+			bit[i] = ((~bit[i])&0x01);
+		}
+	}
+}
+
+/*--------------------------------------GPS第1帧合成函数定义----------------------------*/
+void GPS_Comb_Frame1(unsigned char bit[300],GPS_STRUCT_EPHEMERIS *GPSEphemeris)
+{
+	int i, curbit, data;
+
+	//////////////////////////////////////////////////////////////////////////
+	memset(bit, 0, 300);
+	curbit = 0;
+	//////////////////////////////////////////////////////////////////////////
+	//第一个WORD
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = ((GPS_Word1>>(24-i))&0x01);
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit, D29, D30, 0);
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第二个WORD
+	//17位为Tow GPSEphemeris->tow
+	data = GPSEphemeris->tow;
+	for(i=1;i<=17;i++)
+	{
+		bit[curbit++] = (data>>(17-i))&0x01;
+	}
+	//7位固定
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 1;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+30, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[52] = 0;
+		bit[53] = 1;
+		GPS_ParityCheck(bit+30, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[52] = 1;
+			bit[53] = 0;
+			GPS_ParityCheck(bit+30, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[52] = 1;
+				bit[53] = 1;
+				GPS_ParityCheck(bit+30, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第三个WORD
+	//高10位为GPS周(WN)
+	for(i=1;i<=10;i++)
+	{
+		bit[curbit++] = ((GPSEphemeris->wn)>>(10-i))&0x01;
+	}
+	//2位为C/A或P ON L2
+	curbit += 2;
+	//4位为URA INDEX
+	for(i=1;i<=4;i++)
+	{
+		bit[curbit++] = ((GPSEphemeris->ura)>>(4-i))&0x01;
+	}
+	//6位为HEALTH
+	for(i=1;i<=6;i++)
+	{
+		bit[curbit++] = ((GPSEphemeris->healthS)>>(6-i))&0x01;
+	}
+	//2位为IODC的高两位
+	data = (GPSEphemeris->iodc>>8);
+	for(i=1;i<=2;i++)
+	{
+		bit[curbit++] = (data>>(2-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+60, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第四个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+90, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第五个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+120, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第六个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+150, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第七个WORD
+	curbit += 16;
+	//8位为TGD 第一位为符号位
+	data = round(GPSEphemeris->tgd/pow(2,-31));
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (data>>(8-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+180, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第八个WORD
+	//8位为IODC的低八位
+	data = (GPSEphemeris->iodc&0xFF);
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (data>>(8-i))&0x01;
+	}
+	//16位为TOC
+	data = (GPSEphemeris->toc>>4);
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+210, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第九个WORD
+	//8位为AF2 第一位为符号位
+	data = round(GPSEphemeris->af2/pow(2,-55));
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (data>>(8-i))&0x01;
+	}
+	//16位为AF1 第一位为符号位
+	data = round(GPSEphemeris->af1/pow(2,-43));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+240, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第十个WORD
+	//22位为AF0 第一位为符号位
+	data = round(GPSEphemeris->af0/pow(2,-31));
+	for(i=1;i<=22;i++)
+	{
+		bit[curbit++] = (data>>(22-i))&0x01;
+	}
+	//2位为t
+	curbit += 2;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+270, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[292] = 0;
+		bit[293] = 1;
+		GPS_ParityCheck(bit+270, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[292] = 1;
+			bit[293] = 0;
+			GPS_ParityCheck(bit+270, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[292] = 1;
+				bit[293] = 1;
+				GPS_ParityCheck(bit+270, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+}
+
+/*--------------------------------------GPS第2帧合成函数定义----------------------------*/
+void GPS_Comb_Frame2(unsigned char bit[300],GPS_STRUCT_EPHEMERIS *GPSEphemeris)
+{
+	int i, curbit, data, data1;
+	unsigned int udata,udata1;
+
+	//////////////////////////////////////////////////////////////////////////
+	memset(bit, 0, 300);
+	curbit = 0;
+	//////////////////////////////////////////////////////////////////////////
+	//第一个WORD
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = ((GPS_Word1>>(24-i))&0x01);
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第二个WORD
+	//17位为Tow GPSEphemeris->tow
+	data = GPSEphemeris->tow;
+	for(i=1;i<=17;i++)
+	{
+		bit[curbit++] = (data>>(17-i))&0x01;
+	}
+	//7位固定
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 1;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+30, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[52] = 0;
+		bit[53] = 1;
+		GPS_ParityCheck(bit+30, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[52] = 1;
+			bit[53] = 0;
+			GPS_ParityCheck(bit+30, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[52] = 1;
+				bit[53] = 1;
+				GPS_ParityCheck(bit+30, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+		
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第三个WORD
+	//8位为IODE
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = ((GPSEphemeris->iode)>>(8-i))&0x01;
+	}
+	//16位为Crs 第一位为符号位
+	data = round(GPSEphemeris->crs/pow(2,-5));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+60, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第四个WORD
+	//16位为deln 第一位为符号位
+	data = round((GPSEphemeris->deln / pi) / pow(2,-43));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//8位为M0高8位 第一位为符号位
+	data = round((GPSEphemeris->m0 / pi) / pow(2,-31));
+	data1 = (data>>24);
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (data1>>(8-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+90, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第五个WORD
+	//24位为M0低24位
+	data = (data&0xFFFFFF);
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = (data>>(24-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+120, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第六个WORD
+	//16位为Cuc 第一位为符号位
+	data = round(GPSEphemeris->cuc / pow(2,-29));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//8位为ecc高8位
+	data = round(GPSEphemeris->ecc / pow(2,-33));
+	data1 = (data>>24);
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (data1>>(8-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+150, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第七个WORD
+	//24位为ecc低24位
+	data = (data&0xFFFFFF);
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = (data>>(24-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+180, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第八个WORD
+	//16位为Cus 第一位为符号位
+	data = round(GPSEphemeris->cus / pow(2,-29));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//8位为rootA高8位
+	udata = round(GPSEphemeris->rootA / pow(2,-19));
+	udata1 = (udata>>24);
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (udata1>>(8-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+210, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第九个WORD
+	//24位为rootA低24位
+	udata = (udata&0xFFFFFF);
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = (udata>>(24-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+240, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第十个WORD
+	//16位为toe
+	data = round(GPSEphemeris->toe / pow(2,4));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//1位为FIT INTERVAL FLAG
+	//5位为A0DO
+	//2位为t
+	//6位为P 校验位
+	curbit += 14;
+	GPS_ParityCheck(bit+270, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[292] = 0;
+		bit[293] = 1;
+		GPS_ParityCheck(bit+270, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[292] = 1;
+			bit[293] = 0;
+			GPS_ParityCheck(bit+270, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[292] = 1;
+				bit[293] = 1;
+				GPS_ParityCheck(bit+270, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+	
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+}
+
+/*--------------------------------------GPS第3帧合成函数定义----------------------------*/
+void GPS_Comb_Frame3(unsigned char bit[300],GPS_STRUCT_EPHEMERIS *GPSEphemeris)
+{
+	int i, curbit, data, data1;
+
+	//////////////////////////////////////////////////////////////////////////
+	memset(bit, 0, 300);
+	curbit = 0;
+	//////////////////////////////////////////////////////////////////////////
+	//第一个WORD
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = ((GPS_Word1>>(24-i))&0x01);
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第二个WORD
+	//17位为Tow GPSEphemeris->tow
+	data = GPSEphemeris->tow;
+	for(i=1;i<=17;i++)
+	{
+		bit[curbit++] = (data>>(17-i))&0x01;
+	}
+	//7位固定
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 1;
+	bit[curbit++] = 1;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+30, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[52] = 0;
+		bit[53] = 1;
+		GPS_ParityCheck(bit+30, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[52] = 1;
+			bit[53] = 0;
+			GPS_ParityCheck(bit+30, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[52] = 1;
+				bit[53] = 1;
+				GPS_ParityCheck(bit+30, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+		
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第三个WORD
+	//16位为CIC 第一位为符号位
+	data = round(GPSEphemeris->cic / pow(2,-29));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//8位为omega0高8位 第一位为符号位
+	data = round((GPSEphemeris->omega0 / pi) / pow(2,-31));
+	data1 = (data>>24);
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (data1>>(8-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+60, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第四个WORD
+	//24位为omega0低24位
+	data = (data&0xFFFFFF);
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = (data>>(24-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+90, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第五个WORD
+	//16位为Cis 第一位为符号位
+	data = round(GPSEphemeris->cis / pow(2,-29));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//8位为inc0高8位
+	data = round((GPSEphemeris->inc0 / pi) / pow(2,-31));
+	data1 = (data>>24);
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (data1>>(8-i))&0x01;
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+120, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第六个WORD
+	//24位为inc0低24位
+	data = (data&0xFFFFFF);
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = (data>>(24-i))&0x01;
+	}
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+150, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第七个WORD
+	//16位为Crc 第一位为符号位
+	data = round(GPSEphemeris->crc / pow(2,-5));
+	for(i=1;i<=16;i++)
+	{
+		bit[curbit++] = (data>>(16-i))&0x01;
+	}
+	//8位为argPer高8位
+	data = round((GPSEphemeris->argPer / pi) / pow(2,-31));
+	data1 = (data>>24);
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = (data1>>(8-i))&0x01;
+	}
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+180, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第八个WORD
+	//24位为argPer低24位
+	data = (data&0xFFFFFF);
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = (data>>(24-i))&0x01;
+	}
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+210, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第九个WORD
+	//24位为omegaDot 第一位为符号位
+	data = round((GPSEphemeris->omegaDot/pi) / pow(2,-43));
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = (data>>(24-i))&0x01;
+	}
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+240, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第十个WORD
+	//8位为IODE
+	for(i=1;i<=8;i++)
+	{
+		bit[curbit++] = ((GPSEphemeris->iode)>>(8-i))&0x01;
+	}
+	//14位为incDot 第一位为符号位
+	data = round((GPSEphemeris->incDot/pi) / pow(2,-43));
+	for(i=1;i<=14;i++)
+	{
+		bit[curbit++] = (data>>(14-i))&0x01;
+	}
+	//2位为t
+	//6位为P
+	curbit += 8;
+	GPS_ParityCheck(bit+270, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[292] = 0;
+		bit[293] = 1;
+		GPS_ParityCheck(bit+270, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[292] = 1;
+			bit[293] = 0;
+			GPS_ParityCheck(bit+270, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[292] = 1;
+				bit[293] = 1;
+				GPS_ParityCheck(bit+270, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+	
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+}
+
+/*--------------------------------------GPS第4帧合成函数定义----------------------------*/
+void GPS_Comb_Frame4(unsigned char bit[300], int iTow)
+{
+	int i, curbit, data;
+
+	//////////////////////////////////////////////////////////////////////////
+	memset(bit, 0, 300);
+	curbit = 0;
+	//////////////////////////////////////////////////////////////////////////
+	//第一个WORD
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = ((GPS_Word1>>(24-i))&0x01);
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第二个WORD
+	//17位为Tow GPSEphemeris->tow
+	data = iTow;
+	for(i=1;i<=17;i++)
+	{
+		bit[curbit++] = (data>>(17-i))&0x01;
+	}
+	//7位固定
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 1;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+30, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[52] = 0;
+		bit[53] = 1;
+		GPS_ParityCheck(bit+30, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[52] = 1;
+			bit[53] = 0;
+			GPS_ParityCheck(bit+30, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[52] = 1;
+				bit[53] = 1;
+				GPS_ParityCheck(bit+30, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+		
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第三个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+60, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第四个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+90, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第五个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+120, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第六个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+150, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第七个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+180, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第八个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+210, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第九个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+240, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第十个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+270, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[292] = 0;
+		bit[293] = 1;
+		GPS_ParityCheck(bit+270, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[292] = 1;
+			bit[293] = 0;
+			GPS_ParityCheck(bit+270, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[292] = 1;
+				bit[293] = 1;
+				GPS_ParityCheck(bit+270, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+	
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+}
+
+/*--------------------------------------GPS第5帧合成函数定义----------------------------*/
+void GPS_Comb_Frame5(unsigned char bit[300], int iTow)
+{
+	int i, curbit, data;
+
+	//////////////////////////////////////////////////////////////////////////
+	memset(bit, 0, 300);
+	curbit = 0;
+	//////////////////////////////////////////////////////////////////////////
+	//第一个WORD
+	for(i=1;i<=24;i++)
+	{
+		bit[curbit++] = ((GPS_Word1>>(24-i))&0x01);
+	}
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第二个WORD
+	//17位为Tow GPSEphemeris->tow
+	data = iTow;
+	for(i=1;i<=17;i++)
+	{
+		bit[curbit++] = (data>>(17-i))&0x01;
+	}
+	//7位固定
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	bit[curbit++] = 1;
+	bit[curbit++] = 0;
+	bit[curbit++] = 1;
+	bit[curbit++] = 0;
+	bit[curbit++] = 0;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+30, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[52] = 0;
+		bit[53] = 1;
+		GPS_ParityCheck(bit+30, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[52] = 1;
+			bit[53] = 0;
+			GPS_ParityCheck(bit+30, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[52] = 1;
+				bit[53] = 1;
+				GPS_ParityCheck(bit+30, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+		
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第三个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+60, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第四个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+90, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第五个WORD
+	curbit += 24;
+	//6位为P 校验位
+	curbit += 6;
+	GPS_ParityCheck(bit+120, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第六个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+150, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第七个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+180, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第八个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+210, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第九个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+240, D29, D30, 0);
+
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+	//////////////////////////////////////////////////////////////////////////
+	//第十个WORD
+	curbit += 24;
+	//6位为P
+	curbit += 6;
+	GPS_ParityCheck(bit+270, D29, D30, 1);
+	if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+	{
+		bit[292] = 0;
+		bit[293] = 1;
+		GPS_ParityCheck(bit+270, D29, D30, 1);
+		if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+		{
+			bit[292] = 1;
+			bit[293] = 0;
+			GPS_ParityCheck(bit+270, D29, D30, 1);
+			if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+			{
+				bit[292] = 1;
+				bit[293] = 1;
+				GPS_ParityCheck(bit+270, D29, D30, 1);
+				if(bit[curbit-2]!=0 || bit[curbit-1]!=0)
+				{
+					bit[curbit-2] = 0;
+					bit[curbit-1] = 0;
+				}
+			}
+		}
+	}
+	
+	D29 = bit[curbit-2];
+	D30 = bit[curbit-1];
+}
+
+/*-------------------------------------卫星坐标计算函数定义-----------------------------*/
+void  sate_position(double caltime,double PseudoDistance,GPS_STRUCT_EPHEMERIS *GPSEphemeris,GNSS_Sate_Pos *satepos,GNSS_Pos_MatrixL *sateMatrixL)
+{
+	int 	outcount;				//跳出循环
+	double  dAver_AngSped_n,dUnitTime_tk,dNearAng_MK,dNearAng_EK,temp1,temp2,error,dDisAng_OK;
+	double  dCorct_du,dCorct_dr,dCorct_di,dCorDisAng_uk,dCorVect_rk,dCorOrbitAng_ik;
+	double  dOrbitCoord_xk,dOrbitCoord_yk,dLat_Wk,dWatTime_t,dTime_toc;
+	double	deltEK,deltFK,dReaNearAng_Vk,delt_dCorDisAng_uk,delt_dCorVect_rk,delt_dCorOrbitAng_ik;
+	double  orbtVX,orbtVY,delt_dLat_Wk;
+
+	dAver_AngSped_n = (sqrt(EarthGravCoe) / pow3Func(GPSEphemeris->rootA)) + GPSEphemeris->deln;
+	dTime_toc = GPSEphemeris->iodc - GPSEphemeris->iode + GPSEphemeris->toe;  ////求出toc
+	dWatTime_t = caltime - PseudoDistance / 299792458;
+	dWatTime_t = dWatTime_t - GPSEphemeris->af0 - GPSEphemeris->af1 * (dWatTime_t - dTime_toc) + GPSEphemeris->af2*(dWatTime_t - dTime_toc)*(dWatTime_t - dTime_toc);///////// 求出t=t' - delt_t
+	sateMatrixL->CorrCalTime = dWatTime_t;
+	sateMatrixL->CorrGPSTime = GPSEphemeris->af0 + GPSEphemeris->af1 * (dWatTime_t - dTime_toc) + GPSEphemeris->af2*(dWatTime_t - dTime_toc)*(dWatTime_t - dTime_toc);/////
+	dUnitTime_tk = dWatTime_t - GPSEphemeris->toe;
+	if (dUnitTime_tk>302400.0)
+		dUnitTime_tk=dUnitTime_tk-604800.0;
+	else if (dUnitTime_tk<-302400.0)
+	 	dUnitTime_tk=dUnitTime_tk+604800.0; 
+	dNearAng_MK = GPSEphemeris->m0 + dUnitTime_tk * dAver_AngSped_n;
+	temp1 = dNearAng_MK;
+	error = 10;
+	outcount = 0;
+	while (error > 0.00000000000001 && outcount<15)
+	{
+		temp2 = dNearAng_MK + GPSEphemeris->ecc * sin(temp1);
+		error = fabs (temp1 - temp2);
+		temp1 = temp2;
+		temp1 = temp2 + (temp2 - temp1) / 2;
+		outcount++;
+	}
+	dNearAng_EK = temp2;
+	//偏近点角变化率
+    deltEK = dAver_AngSped_n/(1-GPSEphemeris->ecc*cos(dNearAng_EK)); 
+	dReaNearAng_Vk = 2 * atan(sqrt((1 + GPSEphemeris->ecc)/(1 - GPSEphemeris->ecc)) * tan(dNearAng_EK/2.0));
+    dDisAng_OK = GPSEphemeris->argPer + dReaNearAng_Vk;
+	//计算升交角距变化率
+    deltFK = sqrt((1+GPSEphemeris->ecc)/(1-GPSEphemeris->ecc))*pow2Func(cos(dReaNearAng_Vk/2.0))*deltEK/pow2Func(cos(dNearAng_EK/2.0));
+	dCorct_du = GPSEphemeris->cuc * cos (2 * dDisAng_OK) + GPSEphemeris->cus * sin (2 * dDisAng_OK);
+	dCorct_dr = GPSEphemeris->crc * cos (2 * dDisAng_OK) + GPSEphemeris->crs * sin (2 * dDisAng_OK);
+	dCorct_di = GPSEphemeris->cic * cos (2 * dDisAng_OK) + GPSEphemeris->cis * sin (2 * dDisAng_OK);
+	dCorDisAng_uk = dDisAng_OK + dCorct_du;
+	dCorVect_rk = pow2Func(GPSEphemeris->rootA) * (1 - GPSEphemeris->ecc * cos(dNearAng_EK)) + dCorct_dr;
+	dCorOrbitAng_ik = GPSEphemeris->inc0 + dCorct_di + GPSEphemeris->incDot * dUnitTime_tk;
+	//计算dCorDisAng_uk，dCorVect_rk，dCorOrbitAng_ik的变化率
+    delt_dCorDisAng_uk = (1+2*GPSEphemeris->cus*cos (2 * dDisAng_OK) - 2*GPSEphemeris->cuc*sin (2 * dDisAng_OK))*deltFK;
+    delt_dCorVect_rk = pow2Func(GPSEphemeris->rootA)*GPSEphemeris->ecc*sin(dNearAng_EK) *deltEK +
+	                  2*(GPSEphemeris->crs*cos (2 * dDisAng_OK) - GPSEphemeris->crc*sin (2 * dDisAng_OK))*deltFK;
+    delt_dCorOrbitAng_ik = 2*(GPSEphemeris->cis*cos (2 * dDisAng_OK) - GPSEphemeris->cic*sin (2 * dDisAng_OK))*deltFK+
+	                     GPSEphemeris->incDot;
+	//计算轨道坐标
+    dOrbitCoord_xk = dCorVect_rk * cos (dCorDisAng_uk);
+	dOrbitCoord_yk = dCorVect_rk * sin (dCorDisAng_uk);   
+	//计算轨道坐标内的速度                                                                    
+    orbtVX = delt_dCorVect_rk*cos(dCorDisAng_uk) - dCorVect_rk * sin(dCorDisAng_uk) * delt_dCorDisAng_uk;
+    orbtVY = delt_dCorVect_rk*sin(dCorDisAng_uk) + dCorVect_rk * cos(dCorDisAng_uk) * delt_dCorDisAng_uk;
+	//计算dLat_Wk的变化率
+	dLat_Wk = GPSEphemeris->omega0 + (GPSEphemeris->omegaDot - EarthSpeed) * dUnitTime_tk - EarthSpeed * GPSEphemeris->toe;
+	delt_dLat_Wk = GPSEphemeris->omegaDot - EarthSpeed;
+	satepos->dSateCoord_x = dOrbitCoord_xk * cos(dLat_Wk) - dOrbitCoord_yk *cos(dCorOrbitAng_ik) * sin(dLat_Wk);
+	satepos->dSateCoord_y = dOrbitCoord_xk * sin(dLat_Wk) + dOrbitCoord_yk *cos(dCorOrbitAng_ik) * cos(dLat_Wk);
+	satepos->dSateCoord_z = dOrbitCoord_yk * sin(dCorOrbitAng_ik);	
+	satepos->dSateVx = orbtVX*cos(dLat_Wk) - orbtVY*sin(dLat_Wk)*cos(dCorOrbitAng_ik)+ dOrbitCoord_yk*sin(dLat_Wk)*sin(dCorOrbitAng_ik)*delt_dCorOrbitAng_ik-
+	         (dOrbitCoord_xk*sin(dLat_Wk) + dOrbitCoord_yk*cos(dLat_Wk)*cos(dCorOrbitAng_ik))*delt_dLat_Wk;
+    satepos->dSateVy = orbtVX*sin(dLat_Wk) + orbtVY*cos(dLat_Wk)*cos(dCorOrbitAng_ik)+ dOrbitCoord_yk*cos(dLat_Wk)*sin(dCorOrbitAng_ik)*delt_dCorOrbitAng_ik+
+	         (dOrbitCoord_xk*cos(dLat_Wk) - dOrbitCoord_yk*sin(dLat_Wk)*cos(dCorOrbitAng_ik))*delt_dLat_Wk;
+    satepos->dSateVz = orbtVY*sin(dCorOrbitAng_ik) + dOrbitCoord_yk*cos(dCorOrbitAng_ik)*delt_dCorOrbitAng_ik;
+	sateMatrixL->dSateEcc = GPSEphemeris->ecc;
+	sateMatrixL->dSateRootA = GPSEphemeris->rootA;
+	sateMatrixL->dSateNearAngEK = dNearAng_EK;
+	sateMatrixL->dPTgdLTau = GPSEphemeris->tgd;
+} 
+
+/*------------------------------卫星方位角/高度角计算函数定义---------------------------*/
+void gps_calcAzEl(double *Xs, double *Xu, double *Az, double *El)
+{ 
+  	long i, k;
+	double R, p,s;
+ 	double e[3][3];
+  	double d[3];
+  	p = sqrtFunc(Xu[0],Xu[1]);
+  	R = sqrt3Func(Xu[0],Xu[1],Xu[2]);
+
+	if(p==0||R==0)
+	{
+		for(i=0;i<3;i++)
+			for(k=0;k<3;k++)
+				e[i][k] = 1;
+	}
+	else
+	{
+	  	e[0][0] = -(Xu[1] / p);
+	  	e[0][1] = Xu[0] / p;
+	  	e[0][2] = 0.0;
+	  	e[1][0] = -(Xu[0] * Xu[2] / (p * R));
+	  	e[1][1] = -(Xu[1] * Xu[2] / (p * R));
+	  	e[1][2] = p / R;
+	  	e[2][0] = Xu[0] / R;
+	  	e[2][1] = Xu[1] / R;
+	  	e[2][2] = Xu[2] / R;
+	}
+	/// matrix multiply vector from user //
+  	for (k = 0; k <= 2; k++) 
+	{
+    	d[k] = 0.0;
+    	for (i = 0; i <= 2; i++)
+		{
+      		d[k] += (Xs[i] - Xu[i]) * e[k][i];
+		}
+  	}
+
+  	s = d[2] / sqrt3Func(d[0],d[1],d[2]);
+  	if (s == 1.0)
+	{
+    	*El = 0.5 * pi;
+	}
+  	else
+	{
+    	*El = atan(s / sqrt(1.0 - s * s));
+	}
+
+  	if (d[1] == 0.0 && d[0] > 0.0) 
+	{
+    	*Az = 0.5 * pi;
+  	}
+  	else if (d[1] == 0.0 && d[0] < 0.0) 
+	{
+    	*Az = 1.5 * pi;
+  	}
+	else
+	{
+  		*Az = atan(d[0] / d[1]);
+  		if (d[1] < 0.0)
+		{
+    		*Az += pi;
+		}
+  		else if (d[1] > 0.0 && d[0] < 0.0)
+		{
+      		*Az += 2.0 * pi;
+		}
+ 
+	}
+}
+
+/*----------------------------------通道分配初始化函数定义------------------------------*/
+void GNSS_SIM_CHANNEL_DISTRIBUTE_INIT(double Caltime,GPS_STRUCT_EPHEMERIS *pGPSEphemeris,CHANNEL_STRUCT_BASEINFO *pCHABaseInfo)
+{
+	int		i,num;
+	double 	xtemp[3];
+	double 	utemp[3];
+	double 	Az,El;
+	GNSS_Pos_MatrixL	pSateMatrixL;	
+	GNSS_Sate_Pos	 	pSatePos;		//GPS卫星位置和速度
+	
+	num = 0;
+	for(i=0;i<GPS_SAT_NUM;i++)
+	{
+		SAT_STATUS[i] = SAT_State_UnVisual;
+		SAT_MAP_TO_CHA[i] = 0xFF;
+		if((pGPSEphemeris[i].rootA > 5000) && (pGPSEphemeris[i].rootA < 5300))
+		{
+			sate_position(Caltime,0,&(pGPSEphemeris[i]),&pSatePos,&pSateMatrixL);
+			xtemp[0] = pSatePos.dSateCoord_x;
+			xtemp[1] = pSatePos.dSateCoord_y;
+			xtemp[2] = pSatePos.dSateCoord_z;
+			utemp[0] = local_x;
+			utemp[1] = local_y;
+			utemp[2] = local_z;
+			gps_calcAzEl(xtemp,utemp,&Az,&El);
+			if((El*180/pi)>SAT_EL_UpperLimit)
+			{
+				pCHABaseInfo[num].SAT_PRN = i+1;
+				pCHABaseInfo[num].INIT_ENA = 1;
+				SAT_STATUS[i] = SAT_State_Visual;
+				SAT_MAP_TO_CHA[i] = num;
+				num ++;
+				if(num == GPS_CHANNEL_NUM)
+					i = GPS_SAT_NUM;
+			}
+		}
+	}
+}
+
+/*----------------------------------通道分配初始化函数定义------------------------------*/
+void SAT_TO_CHA_RealTimeUpdate(double Caltime,GPS_STRUCT_EPHEMERIS *pGPSEphemeris,CHANNEL_STRUCT_BASEINFO *pCHABaseInfo)
+{
+	int		i,j;
+	int		*GNSS_Pointer;
+	double 	xtemp[3];
+	double 	utemp[3];
+	double 	Az,El;
+	GNSS_Pos_MatrixL	pSateMatrixL;	
+	GNSS_Sate_Pos	 	pSatePos;		//GPS卫星位置和速度
+
+	for(i=0;i<GPS_SAT_NUM;i++)
+	{
+		if((pGPSEphemeris[i].rootA > 5000) && (pGPSEphemeris[i].rootA < 5300))
+		{
+			sate_position(Caltime,0,&(pGPSEphemeris[i]),&pSatePos,&pSateMatrixL);
+			xtemp[0] = pSatePos.dSateCoord_x;
+			xtemp[1] = pSatePos.dSateCoord_y;
+			xtemp[2] = pSatePos.dSateCoord_z;
+			utemp[0] = local_x;
+			utemp[1] = local_y;
+			utemp[2] = local_z;
+			gps_calcAzEl(xtemp,utemp,&Az,&El);
+			if(SAT_STATUS[i] == SAT_State_Visual)
+			{
+				if((El*180/pi)<SAT_EL_LowerLimit)
+				{
+					//复位该通道
+					GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(SYSTEM_LEVEL+CHANNEL_SYS+ADDR_RESET_CHANNEL));	//通道复位操作
+					CHA_RESET_STATUS = CHA_RESET_STATUS | (0x1<<(SAT_MAP_TO_CHA[i]+1));
+					*GNSS_Pointer = CHA_RESET_STATUS;
+					delay(100);
+					pCHABaseInfo[SAT_MAP_TO_CHA[i]].SAT_PRN = 0xFF;
+					pCHABaseInfo[SAT_MAP_TO_CHA[i]].INIT_ENA = 0;
+					SAT_STATUS[i] = SAT_State_UnVisual;
+					SAT_MAP_TO_CHA[i] = 0xFF;
+				}
+			}
+			else
+			{
+				if((El*180/pi)>SAT_EL_UpperLimit)
+				{
+					for(j=0;j<GPS_CHANNEL_NUM;j++)
+					{
+						if(pCHABaseInfo[j].SAT_PRN == ((char)0xFF))
+						{
+							pCHABaseInfo[j].SAT_PRN = i+1;
+							pCHABaseInfo[j].INIT_ENA = 1;
+							SAT_STATUS[i] = SAT_State_Visual;
+							SAT_MAP_TO_CHA[i] = j;
+							j = GPS_CHANNEL_NUM;
+						}	
+					}
+				}
+			}
+		}
+	}
+}
+
+/*---------------------------根据历书获取每颗卫星星历计算函数定义-----------------------*/
+void GetEPHByALM(int tow,int wn,GPSData_ALM *pGPSALM,GPS_STRUCT_EPHEMERIS *pGPSEPH)
+{
+	double temppi, cal_time;
+
+	int i;
+	for(i=0;i<GPS_SAT_NUM;i++)
+	{
+		cal_time = (tow-pGPSALM->toa) + (wn-pGPSALM->wna)*7*24*3600;
+		pGPSEPH->toe = tow;
+		//pGPSEPH->af0 = (double)pGPSALM->af0 + ((double)pGPSALM->af1) * cal_time;
+		//pGPSEPH->af1 = (double)pGPSALM->af1;
+		pGPSEPH->m0 = (double)pGPSALM->m0 + (sqrt(GM)/pow(((double)(pGPSALM->rootA)),3))*cal_time;
+		temppi = (pGPSEPH->m0)/(2*pi);
+		if(temppi >1)
+			pGPSEPH->m0 = (pGPSEPH->m0-((int)temppi)*pi*2);
+		if(temppi<-1)
+			pGPSEPH->m0 = (pGPSEPH->m0-((int)temppi)*pi*2);
+
+		if(pGPSEPH->m0>pi)
+			pGPSEPH->m0 = pGPSEPH->m0 - pi*2;
+		if(pGPSEPH->m0<-pi)
+			pGPSEPH->m0 = pGPSEPH->m0 + pi*2;
+		
+		pGPSEPH->ecc = (double)pGPSALM->ecc;
+		pGPSEPH->rootA = (double)pGPSALM->rootA;
+		pGPSEPH->omega0 = (double)pGPSALM->omega0 + ((double)pGPSALM->omegaDot)*(tow-pGPSALM->toa) - EarthSpeed*(wn-pGPSALM->wna)*7*24*3600;
+		temppi = (int)(pGPSEPH->omega0/(2*pi));
+		pGPSEPH->omega0 = pGPSEPH->omega0 - temppi*2*pi;
+		if(pGPSEPH->omega0>pi && pGPSEPH->omega0<=(2*pi))
+		{
+			pGPSEPH->omega0 = pGPSEPH->omega0 - 2*pi;
+		}
+		else if(pGPSEPH->omega0>=(-2*pi) && pGPSEPH->omega0<(-1*pi))
+		{
+			pGPSEPH->omega0 = pGPSEPH->omega0 + 2*pi;
+		}
+
+		pGPSEPH->inc0 = (double)pGPSALM->deli;	
+		pGPSEPH->argPer = (double)pGPSALM->argPer;
+		pGPSEPH->omegaDot = (double)pGPSALM->omegaDot;
+		pGPSEPH->healthS = (double)pGPSALM->healthS;
+		pGPSEPH->wn = wn;
+		pGPSEPH->sv = pGPSALM->sv;
+	}
+}
+
+/*--------------------------------GPS历书数据解析函数定义-------------------------------*/
+void GPSALM_Parse(char* data, int datalen)
+{
+	//比较帧头
+	if(datalen>10 && memcmp(data, "$GPALM", 6)==0)
+	{
+		short alminfolen = *(short*)(data+6);
+		short almsize = sizeof(GPSData_ALM);
+		if(alminfolen/almsize==GPS_SAT_NUM)
+		{
+			memcpy(GPSALM, data+8, alminfolen);
+		}
+	}
+}
+
+/*------------------------------------USB帧解析函数定义---------------------------------*/
+void ParseProtocol(char* data, int datalen)
+{
+	int		*GNSS_Pointer;
+	short	startindx = 0, subdatalen = 0, infolen = 0, sSize = 0;
+	//比较帧头
+	if(datalen>=10)
+	{
+		if(memcmp(data, "$GPALM", 6)==0)
+		{	//历书信息
+			infolen = *(short*)(data+6);
+			sSize = sizeof(GPSData_ALM);
+			if(infolen/sSize==GPS_SAT_NUM)
+			{
+				memcpy(GPSALM, data+8, infolen);
+			}
+			startindx = infolen + 10;
+			subdatalen = datalen - startindx;
+		}
+		else if(memcmp(data, "$GPTIM", 6)==0)
+		{	//时间信息
+			infolen = *(short*)(data+6);
+			if(infolen==sizeof(STRUCT_TIME))
+			{
+				memcpy(&STimeInfo, data+8, infolen);
+			}
+			startindx = infolen + 10;
+			subdatalen = datalen - startindx;
+		}
+		else if(memcmp(data, "$MOPOS", 6)==0)
+		{	//轨迹点信息
+			infolen = *(short*)(data+6);
+			if(infolen%sizeof(STRUCT_MOTION)==0)
+			{
+				STRUCT_MOTION *sMotion = (STRUCT_MOTION*)malloc(infolen);
+				memcpy(sMotion, data+8, infolen);
+				local_x = sMotion->m_dX;
+				local_y = sMotion->m_dY;
+				local_z = sMotion->m_dZ;
+				free(sMotion);
+				sMotion = NULL;
+			}
+			startindx = infolen + 10;
+			subdatalen = datalen - startindx;
+		}
+		else if(memcmp(data, "$MOSTA", 6)==0)
+		{//开始运行
+			startindx = 10;
+			subdatalen = datalen - startindx;
+			GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(SYSTEM_LEVEL+CHANNEL_SYS+ADDR_RESET_CHANNEL));	//通道复位操作
+			CHA_RESET_STATUS = CHA_RESET_STATUS | 0xFFFFFFFF;
+			*GNSS_Pointer = CHA_RESET_STATUS;
+			delay(100);
+			CHA_RESET_STATUS = CHA_RESET_STATUS & 0xfffffffe;
+			*GNSS_Pointer = CHA_RESET_STATUS;
+			SYSTEM_STATUS = GNSS_SIM_State_Init;
+		}
+		else if(memcmp(data, "$MOEND", 6)==0)
+		{//结束运行
+			startindx = 10;
+			subdatalen = datalen - startindx;
+			SYSTEM_STATUS = GNSS_SIM_State_Idle;
+			GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(SYSTEM_LEVEL+CHANNEL_SYS+ADDR_RESET_CHANNEL));	//通道复位操作
+			CHA_RESET_STATUS = CHA_RESET_STATUS | 0xfffffffe;
+			*GNSS_Pointer = CHA_RESET_STATUS;
+			delay(100);
+		}
+	}
+	if(subdatalen>0)
+	{			
+		ParseProtocol(data+startindx, subdatalen);
+	}
+}
+
+/*---------------------------------USB数据通讯接口函数定义-----------------------------*/
+void USB_DATA_Recive(void)
+{
+	int		*GNSS_Pointer;
+	int		datacount;
+	int		REG_DATA_VALID_STATUS;
+	short	tempvalue;
+	char	data[8192];
+
+	datacount = 0;
+	GNSS_Pointer = (int *)(FPGA_READ_CS+4*(USB_CHANNEL+ADDR_DATA_VALID_STATUS));
+   	REG_DATA_VALID_STATUS = *GNSS_Pointer;
+	while(REG_DATA_VALID_STATUS == 1)
+	{
+		GNSS_Pointer = (int *)(FPGA_READ_CS+4*(USB_CHANNEL+ADDR_RXBUFF));
+		tempvalue = *GNSS_Pointer;
+		data[datacount] = (char)tempvalue;
+		datacount++;
+		data[datacount] = (char)(tempvalue>>8);
+		datacount++;
+		if(datacount == 8192)
+			datacount = 0;
+		GNSS_Pointer = (int *)(FPGA_READ_CS+4*(USB_CHANNEL+ADDR_DATA_VALID_STATUS));
+   		REG_DATA_VALID_STATUS = *GNSS_Pointer;
+	}
+	if(datacount>0)
+	{
+		ParseProtocol(data, datacount);
+		datacount=0;
+	}
+}
+
+/*--------------------------模拟源硬件通道相关参数初始化函数定义-----------------------*/
+void GNSS_SIM_CHACOEF_INIT(int CHANNEL_NO,int Tow_Loc,int WeekNum_Loc,GPS_STRUCT_EPHEMERIS *pGPSEphemeris,CHANNEL_STRUCT_BASEINFO *pCHABaseInfo)
+{
+	int					SAT_NUM;
+	int					*GNSS_Pointer;
+	int					temp_value;
+	double				temp_value2;
+	double				temp_value3;
+	unsigned long long	temp1;
+	unsigned int		temp2,temp3;
+	double				ddt,dRotat,dRtrop;				//修正参量
+	double 				xtemp[3];
+	double 				utemp[3];
+	double 				Az,El;
+	double				Position_Abs;
+	GNSS_Pos_MatrixL	pSateMatrixL;	
+	GNSS_Sate_Pos	 	pSatePos;		//GPS卫星位置和速度
+	
+	pGPSEphemeris->tow = Tow_Loc;
+	pCHABaseInfo->Caltime = (pGPSEphemeris->tow-1) * 6;
+	pCHABaseInfo->WeekNum = WeekNum_Loc;
+	pCHABaseInfo->BIT_CNT = 1;
+	pCHABaseInfo->BIT_FLG = 0;
+	pCHABaseInfo->FRAME_CNT = (pGPSEphemeris->tow-1) % 5;
+	///////////////////////////////////////////////
+	sate_position(pCHABaseInfo->Caltime,0,pGPSEphemeris,&pSatePos,&pSateMatrixL);
+	ddt = (4.442809305E-10)*pSateMatrixL.dSateEcc * pSateMatrixL.dSateRootA * sin(pSateMatrixL.dSateNearAngEK);  //相对论效应
+	dRotat = ((pSatePos.dSateCoord_x-local_x)*pSatePos.dSateCoord_y-(pSatePos.dSateCoord_y - local_y)*pSatePos.dSateCoord_x)*7.2921151467E-5/light_speed;
+	////////////////////////////////////////////////////////////
+	xtemp[0] = pSatePos.dSateCoord_x;
+	xtemp[1] = pSatePos.dSateCoord_y;
+	xtemp[2] = pSatePos.dSateCoord_z;
+	utemp[0] = local_x;
+	utemp[1] = local_y;
+	utemp[2] = local_z;
+	gps_calcAzEl(xtemp,utemp,&Az,&El);
+	dRtrop = 2.4224*exp(-0.13346e-3*51.559)/(0.026+sin(El)); 
+	if(dRtrop < 0) 
+		dRtrop = 0;
+	else if (dRtrop > 200) 
+		dRtrop = 200;
+	////////////////////////////////////////////////////////////
+	Position_Abs = sqrt3Func((pSatePos.dSateCoord_x-local_x),(pSatePos.dSateCoord_y-local_y),(pSatePos.dSateCoord_z-local_z)) + ddt*light_speed + dRotat + dRtrop;
+	pCHABaseInfo->Position_Abs_Del = Position_Abs;
+	temp_value = (unsigned int)(Position_Abs/(light_speed/Main_Clock));
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_FRAME_DELAY_VAL));					//帧延迟计数值初始化
+	*GNSS_Pointer = temp_value-2;
+	temp_value2 = Position_Abs - temp_value*(light_speed/Main_Clock);
+	temp_value3 = (pow(2,GPS_CODE_NCO_WIDTH)-1)*(1-(temp_value2/(light_speed/GPS_CODE_BaseFreq)));
+	temp1 = round(temp_value3);
+	temp2 = temp1>>32;
+	temp3 = temp1 & 0xFFFFFFFF;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CODE_NCO_INIT_PHASE_H));			//码初始相位高字初始化
+	*GNSS_Pointer = temp2;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CODE_NCO_INIT_PHASE_L));			//码初始相位低字初始化
+	*GNSS_Pointer = temp3;
+	///////////////////////////////////////////////////////////////////////////////
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CARRIER_NCO_INIT_PHASE_H));			//载波初始相位高字初始化
+	*GNSS_Pointer = 0;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CARRIER_NCO_INIT_PHASE_L));			//载波初始相位低字初始化
+	*GNSS_Pointer = 0;
+	//分配捕获伪码进跟踪通道
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(SYSTEM_LEVEL+CHANNEL_SYS+ADDR_RESET_CHANNEL));	//通道复位操作
+	CHA_RESET_STATUS = CHA_RESET_STATUS & (~(0x1<<(CHANNEL_NO+1)));
+	*GNSS_Pointer = CHA_RESET_STATUS;
+	delay(100);
+	SAT_NUM = pCHABaseInfo->SAT_PRN - 1;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(SYSTEM_LEVEL+CHANNEL_SYS+ADDR_CHA_DIST_REG)); 
+	*GNSS_Pointer = (SAT_NUM<<4)+CHANNEL_NO;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(SYSTEM_LEVEL+CHANNEL_SYS+ADDR_CHA_DIST_TRIG)); 
+	*GNSS_Pointer = 0;
+	delay(Main_Clock/300000);
+}
+
+/*-------------------------模拟源硬件通道相关参数实时更新函数定义---------------------*/
+void GNSS_SIM_CHACOEF_UPDATE(int CHANNEL_NO,GPS_STRUCT_EPHEMERIS *pGPSEphemeris,CHANNEL_STRUCT_BASEINFO *pCHABaseInfo)
+{
+	int					*GNSS_Pointer;
+	double				temp_value;
+	unsigned long long	temp1;
+	unsigned int		temp2,temp3;
+	double				Position_Abs;
+	double				Dopplor;
+	double				ddt,dRotat,dRtrop;			//修正参量
+	double 				xtemp[3];
+	double 				utemp[3];
+	double 				Az,El;
+	int					Presduo;
+	int					Code_Phase;
+	GNSS_Pos_MatrixL	pSateMatrixL;	
+	GNSS_Sate_Pos	 	pSatePos;		//GPS卫星位置和速度
+	
+	sate_position(pCHABaseInfo->Caltime,0,pGPSEphemeris,&pSatePos,&pSateMatrixL);
+	ddt = (4.442809305E-10)*pSateMatrixL.dSateEcc * pSateMatrixL.dSateRootA * sin(pSateMatrixL.dSateNearAngEK);  //相对论效应
+	dRotat = ((pSatePos.dSateCoord_x-local_x)*pSatePos.dSateCoord_y-(pSatePos.dSateCoord_y - local_y)*pSatePos.dSateCoord_x)*7.2921151467E-5/light_speed;
+	////////////////////////////////////////////////////////////
+	xtemp[0] = pSatePos.dSateCoord_x;
+	xtemp[1] = pSatePos.dSateCoord_y;
+	xtemp[2] = pSatePos.dSateCoord_z;
+	utemp[0] = local_x;
+	utemp[1] = local_y;
+	utemp[2] = local_z;
+	gps_calcAzEl(xtemp,utemp,&Az,&El);
+	dRtrop = 2.4224*exp(-0.13346e-3*51.559)/(0.026+sin(El)); 
+	if(dRtrop < 0)
+		dRtrop = 0;
+	else if (dRtrop > 200)
+		dRtrop = 200;
+	////////////////////////////////////////////////////////////
+	Position_Abs = sqrt3Func((pSatePos.dSateCoord_x-local_x),(pSatePos.dSateCoord_y-local_y),(pSatePos.dSateCoord_z-local_z)) + ddt*light_speed + dRotat + dRtrop;
+	GNSS_Pointer = (int *)(FPGA_READ_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_PRESDUO));
+	Presduo = *GNSS_Pointer;
+	GNSS_Pointer = (int *)(FPGA_READ_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CODE_PHASE));
+	Code_Phase = *GNSS_Pointer;
+	pCHABaseInfo->Presduo_Delta = (pCHABaseInfo->Position_Abs_Del2-(1-1.0*((unsigned int)(Code_Phase))/4294967296)*299.792458-Presduo*2.99792458)/2997924.58;
+	pCHABaseInfo->Presduo_Delta = (pCHABaseInfo->Presduo_Delta-round(pCHABaseInfo->Presduo_Delta))*2997924.58;
+	////////////////////////////////////////////////////////////////////////////////
+	Dopplor = (Position_Abs - pCHABaseInfo->Position_Abs_Del)*(GPS_RF_CarrFreq_L1/light_speed)/Update_INT;
+	pCHABaseInfo->Position_Abs_Del2 = pCHABaseInfo->Position_Abs_Del;
+	pCHABaseInfo->Position_Abs_Del = Position_Abs;
+	if(pCHABaseInfo->Presduo_Delta >= 0)
+	{
+		Dopplor = Dopplor + 1e-2;
+	}
+	else
+	{
+		Dopplor = Dopplor - 1e-2;
+	}
+	////////////////////////////////////////////////////////////////////////////////
+	temp_value = pow(2,GPS_CARRIER_NCO_WIDTH)*(GPS_IF_COMPENSATE - Dopplor)/Main_Clock;
+	temp1 = round(temp_value);
+	temp2 = temp1>>32;
+	temp3 = temp1 & 0xFFFFFFFF;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CARRIER_NCO_INCR_H));		//载波频率控制字高字初始化
+	*GNSS_Pointer = temp2;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CARRIER_NCO_INCR_L));		//载波频率控制字低字初始化
+	*GNSS_Pointer = temp3;
+	temp_value = pow(2,GPS_CODE_NCO_WIDTH)*(GPS_CODE_BaseFreq-Dopplor/(GPS_RF_CarrFreq_L1/GPS_CODE_BaseFreq))/Main_Clock;
+	temp1 = round(temp_value);
+	temp2 = temp1>>32;
+	temp3 = temp1 & 0xFFFFFFFF;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CODE_NCO_INCR_H));			//码频率控制字高字初始化
+	*GNSS_Pointer = temp2;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(GNSS_SIM_CHANNEL+CHANNEL_ADDR_FPGA[CHANNEL_NO]+ADDR_CODE_NCO_INCR_L));			//码频率控制字低字初始化
+	*GNSS_Pointer = temp3;
+}
+
+/*-----------------------------------GPS子帧数据更新函数定义-------------------------------*/
+void GNSS_SIM_FRAME_DATA_UPDATE(GPSData_ALM *pGPSALM,GPS_STRUCT_EPHEMERIS *pGPSEphemeris,CHANNEL_STRUCT_BASEINFO *pCHABaseInfo)
+{
+	int		wn_temp,tow_temp,tow_temp2;
+
+	pCHABaseInfo->BIT_CNT = 0;
+	pCHABaseInfo->FRAME_CNT ++;
+	if(pCHABaseInfo->FRAME_CNT == 5)
+	{
+		pCHABaseInfo->FRAME_CNT = 0;
+	}
+	if(pCHABaseInfo->FRAME_CNT == 0)
+	{
+		(pGPSEphemeris->tow) ++;
+		tow_temp2 = pGPSEphemeris->tow;
+		if(fabs((pCHABaseInfo->WeekNum-pGPSEphemeris->wn)*604800.0+(pCHABaseInfo->Caltime+0.02-1.0*pGPSEphemeris->toe))<=1e-5)
+		{
+			wn_temp = pCHABaseInfo->WeekNum;
+			tow_temp = (floor((pCHABaseInfo->Caltime+1.0)/7200)+1)*7200;
+			if(tow_temp>=604800)
+			{
+				tow_temp = tow_temp - 604800;
+				wn_temp ++;
+			}
+			GetEPHByALM(tow_temp,wn_temp,pGPSALM,pGPSEphemeris);
+		}
+		pGPSEphemeris->tow = tow_temp2;
+		GPS_Comb_Frame1(pCHABaseInfo->NavData_SAT,pGPSEphemeris);
+	}
+	else if(pCHABaseInfo->FRAME_CNT == 1)
+	{
+		(pGPSEphemeris->tow) ++;							
+		GPS_Comb_Frame2(pCHABaseInfo->NavData_SAT,pGPSEphemeris);
+	}
+	else if(pCHABaseInfo->FRAME_CNT == 2)
+	{
+		(pGPSEphemeris->tow) ++;							
+		GPS_Comb_Frame3(pCHABaseInfo->NavData_SAT,pGPSEphemeris);
+	}
+	else if(pCHABaseInfo->FRAME_CNT == 3)
+	{
+		(pGPSEphemeris->tow) ++;							
+		GPS_Comb_Frame4(pCHABaseInfo->NavData_SAT,pGPSEphemeris->tow);
+	}
+	else if(pCHABaseInfo->FRAME_CNT == 4)
+	{
+		(pGPSEphemeris->tow) ++;							
+		GPS_Comb_Frame5(pCHABaseInfo->NavData_SAT,pGPSEphemeris->tow);
+		
+	}
+}
+
+
+/*----------------------------------星历数据实时更新函数定义------------------------------*/
+void Ephemeris_Data_RealTimeUpdate(double Caltime,int WeekNum,GPSData_ALM *pGPSALM,GPS_STRUCT_EPHEMERIS *pGPSEphemeris,char *SAT_STATUS)
+{
+	int	i;
+	int	wn_temp,tow_temp;
+
+	for(i=0;i<GPS_SAT_NUM;i++)
+	{
+		if((pGPSEphemeris[i].rootA > 5000) && (pGPSEphemeris[i].rootA < 5300) && (SAT_STATUS[i] == (char)(SAT_State_UnVisual)))
+		{
+			if(((WeekNum-pGPSEphemeris[i].wn)*604800.0+(Caltime-1.0*pGPSEphemeris[i].toe))>=0.0)
+			{
+				wn_temp = WeekNum;
+				tow_temp = (floor(Caltime/7200)+1)*7200;
+				if(tow_temp>=604800)
+				{
+					tow_temp = tow_temp - 604800;
+					wn_temp ++;
+				}
+				GetEPHByALM(tow_temp,wn_temp,&(pGPSALM[i]),&(pGPSEphemeris[i]));
+			}
+		}
+	}
+}
+
+/*--------------------------------------串口测试函数定义---------------------------------*/
+void GNSS_UART_Test_SendData()
+{
+	//-------------串口测试数据发送------------//
+	int		i;
+	char	data[12];
+	int 	*GNSS_Pointer;
+	GNSS_Pointer = (int *)(FPGA_WRITE_CS+4*(UART_CHANNEL_A+ADDR_TXBUFF));
+	for(i=0;i<12;i++)
+	{
+		sprintf(data,"%4d ",(int)(CHANNEL_BaseInfo[i].Presduo_Delta*100));
+		*GNSS_Pointer = data[0];
+		*GNSS_Pointer = data[1];
+		*GNSS_Pointer = data[2];
+		*GNSS_Pointer = data[3];
+		*GNSS_Pointer = data[4];
+	}
+	sprintf(data,"\r\n");
+	*GNSS_Pointer = data[0];
+	*GNSS_Pointer = data[1];
+}

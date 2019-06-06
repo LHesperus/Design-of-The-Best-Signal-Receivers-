@@ -1,0 +1,116 @@
+--------------------------------------------------------------------------------------
+Timing Analyzer Summary
+--------------------------------------------------------------------------------------
+
+Type           : Worst-case tsu
+Slack          : N/A
+Required Time  : None
+Actual Time    : 8.822 ns
+From           : TEA[7]
+To             : REG_PROG_INT[6]
+From Clock     : --
+To Clock       : TECLKOUT
+Failed Paths   : 0
+
+Type           : Worst-case tco
+Slack          : N/A
+Required Time  : None
+Actual Time    : 9.373 ns
+From           : TED_OUT[7]
+To             : TED[27]
+From Clock     : TECLKOUT
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case tpd
+Slack          : N/A
+Required Time  : None
+Actual Time    : 2.267 ns
+From           : altera_internal_jtag~TDO
+To             : altera_reserved_tdo
+From Clock     : --
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case th
+Slack          : N/A
+Required Time  : None
+Actual Time    : 1.020 ns
+From           : altera_internal_jtag~TMSUTAP
+To             : sld_hub:sld_hub_inst|sld_shadow_jsm:shadow_jsm|state[13]
+From Clock     : --
+To Clock       : altera_internal_jtag~TCKUTAP
+Failed Paths   : 0
+
+Type           : Clock Setup: 'PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk1'
+Slack          : 3.292 ns
+Required Time  : 100.00 MHz ( period = 10.000 ns )
+Actual Time    : 149.08 MHz ( period = 6.708 ns )
+From           : phase[0]
+To             : DAC_TABLE:DAC_TABLE_DAC4|altsyncram:altsyncram_component|altsyncram_nj91:auto_generated|ram_block1a6~porta_address_reg9
+From Clock     : PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk1
+To Clock       : PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk1
+Failed Paths   : 0
+
+Type           : Clock Setup: 'PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk0'
+Slack          : 4.114 ns
+Required Time  : 100.00 MHz ( period = 10.000 ns )
+Actual Time    : 169.89 MHz ( period = 5.886 ns )
+From           : sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_ela_control:ela_control|sld_ela_trigger_flow_mgr:\builtin:ela_trigger_flow_mgr_entity|last_level_delayed
+To             : sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_buffer_manager:sld_buffer_manager_inst|last_buffer_write_address_sig[9]
+From Clock     : PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk0
+To Clock       : PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk0
+Failed Paths   : 0
+
+Type           : Clock Setup: 'altera_internal_jtag~TCKUTAP'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 71.03 MHz ( period = 14.078 ns )
+From           : sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_offload_buffer_mgr:\stp_non_zero_depth_offload_gen:stp_offload_buff_mgr_inst|lpm_shiftreg:info_data_shift_out|dffs[0]
+To             : sld_hub:sld_hub_inst|tdo
+From Clock     : altera_internal_jtag~TCKUTAP
+To Clock       : altera_internal_jtag~TCKUTAP
+Failed Paths   : 0
+
+Type           : Clock Setup: 'TECLKOUT'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 162.42 MHz ( period = 6.157 ns )
+From           : UART_TXD:UART_TXD_B|cnt_for_divBaudRate[4]
+To             : UART_TXD:UART_TXD_B|cnt_for_divBaudRate[5]
+From Clock     : TECLKOUT
+To Clock       : TECLKOUT
+Failed Paths   : 0
+
+Type           : Clock Hold: 'PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk0'
+Slack          : 0.393 ns
+Required Time  : 100.00 MHz ( period = 10.000 ns )
+Actual Time    : N/A
+From           : sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_buffer_manager:sld_buffer_manager_inst|is_buffer_wrapped_once_sig
+To             : sld_signaltap:auto_signaltap_0|sld_signaltap_impl:sld_signaltap_body|sld_buffer_manager:sld_buffer_manager_inst|is_buffer_wrapped_once_sig
+From Clock     : PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk0
+To Clock       : PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk0
+Failed Paths   : 0
+
+Type           : Clock Hold: 'PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk1'
+Slack          : 0.411 ns
+Required Time  : 100.00 MHz ( period = 10.000 ns )
+Actual Time    : N/A
+From           : Reset_Gen:Reset_Gen_M|cnt_for_reset[1]
+To             : Reset_Gen:Reset_Gen_M|reset
+From Clock     : PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk1
+To Clock       : PLL_25MxN:PLL_25MxN_M|altpll:altpll_component|_clk1
+Failed Paths   : 0
+
+Type           : Total number of failed paths
+Slack          : 
+Required Time  : 
+Actual Time    : 
+From           : 
+To             : 
+From Clock     : 
+To Clock       : 
+Failed Paths   : 0
+
+--------------------------------------------------------------------------------------
+

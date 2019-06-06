@@ -1,0 +1,17 @@
+Fitter Status : Successful - Mon Jun 11 09:14:12 2018
+Quartus II Version : 9.1 Build 222 10/21/2009 SJ Full Version
+Revision Name : RadarSingalProcess
+Top-level Entity Name : RadarSingalProcessTop
+Family : Stratix II
+Device : EP2S90F1020I4
+Timing Models : Final
+Logic utilization : 48 %
+    Combinational ALUTs : 24,151 / 72,768 ( 33 % )
+    Dedicated logic registers : 32,767 / 72,768 ( 45 % )
+Total registers : 32767
+Total pins : 64 / 759 ( 8 % )
+Total virtual pins : 0
+Total block memory bits : 1,549,568 / 4,520,448 ( 34 % )
+DSP block 9-bit elements : 16 / 384 ( 4 % )
+Total PLLs : 1 / 12 ( 8 % )
+Total DLLs : 0 / 2 ( 0 % )

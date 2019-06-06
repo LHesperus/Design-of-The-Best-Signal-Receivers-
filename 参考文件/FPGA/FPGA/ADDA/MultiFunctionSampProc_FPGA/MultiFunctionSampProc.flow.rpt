@@ -1,0 +1,147 @@
+Flow report for MultiFunctionSampProc
+Thu May 24 16:30:27 2018
+Quartus II Version 9.0 Build 132 02/25/2009 SJ Full Version
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Flow Summary
+  3. Flow Settings
+  4. Flow Non-Default Global Settings
+  5. Flow Elapsed Time
+  6. Flow OS Summary
+  7. Flow Log
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 1991-2009 Altera Corporation
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, Altera MegaCore Function License 
+Agreement, or other applicable license agreement, including, 
+without limitation, that your use is for the sole purpose of 
+programming logic devices manufactured by Altera and sold by 
+Altera or its authorized distributors.  Please refer to the 
+applicable agreement for further details.
+
+
+
++--------------------------------------------------------------------------+
+; Flow Summary                                                             ;
++-------------------------------+------------------------------------------+
+; Flow Status                   ; Successful - Thu May 24 16:30:27 2018    ;
+; Quartus II Version            ; 9.0 Build 132 02/25/2009 SJ Full Version ;
+; Revision Name                 ; MultiFunctionSampProc                    ;
+; Top-level Entity Name         ; MultiFunctionSampProc                    ;
+; Family                        ; Stratix II                               ;
+; Device                        ; EP2S90F1020I4                            ;
+; Timing Models                 ; Final                                    ;
+; Met timing requirements       ; Yes                                      ;
+; Logic utilization             ; 2 %                                      ;
+;     Combinational ALUTs       ; 755 / 72,768 ( 1 % )                     ;
+;     Dedicated logic registers ; 1,395 / 72,768 ( 2 % )                   ;
+; Total registers               ; 1395                                     ;
+; Total pins                    ; 194 / 759 ( 26 % )                       ;
+; Total virtual pins            ; 0                                        ;
+; Total block memory bits       ; 212,992 / 4,520,448 ( 5 % )              ;
+; DSP block 9-bit elements      ; 0 / 384 ( 0 % )                          ;
+; Total PLLs                    ; 1 / 12 ( 8 % )                           ;
+; Total DLLs                    ; 0 / 2 ( 0 % )                            ;
++-------------------------------+------------------------------------------+
+
+
++-------------------------------------------+
+; Flow Settings                             ;
++-------------------+-----------------------+
+; Option            ; Setting               ;
++-------------------+-----------------------+
+; Start date & time ; 05/24/2018 16:29:18   ;
+; Main task         ; Compilation           ;
+; Revision Name     ; MultiFunctionSampProc ;
++-------------------+-----------------------+
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                                                                                                                                                                                   ;
++------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+-------------+------------------+
+; Assignment Name                    ; Value                                                                                                                                                                                        ; Default Value ; Entity Name ; Section Id       ;
++------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+-------------+------------------+
+; COMPILER_SIGNATURE_ID              ; 211380404934789.152715055805884                                                                                                                                                              ; --            ; --          ; --               ;
+; ENABLE_SIGNALTAP                   ; On                                                                                                                                                                                           ; --            ; --          ; --               ;
+; MAX_CORE_JUNCTION_TEMP             ; 100                                                                                                                                                                                          ; --            ; --          ; --               ;
+; MIN_CORE_JUNCTION_TEMP             ; -40                                                                                                                                                                                          ; --            ; --          ; --               ;
+; PARTITION_COLOR                    ; 2147039                                                                                                                                                                                      ; --            ; --          ; Top              ;
+; PARTITION_NETLIST_TYPE             ; SOURCE                                                                                                                                                                                       ; --            ; --          ; Top              ;
+; SLD_NODE_CREATOR_ID                ; 110                                                                                                                                                                                          ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_ENTITY_NAME               ; sld_signaltap                                                                                                                                                                                ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_RAM_BLOCK_TYPE=M4K                                                                                                                                                                       ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_NODE_INFO=805334528                                                                                                                                                                      ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_POWER_UP_TRIGGER=0                                                                                                                                                                       ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_SEGMENT_SIZE=2048                                                                                                                                                                        ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_STATE_FLOW_USE_GENERATED=0                                                                                                                                                               ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_STATE_BITS=11                                                                                                                                                                            ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_BUFFER_FULL_STOP=1                                                                                                                                                                       ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_CURRENT_RESOURCE_WIDTH=1                                                                                                                                                                 ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_TRIGGER_LEVEL=1                                                                                                                                                                          ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_SAMPLE_DEPTH=2048                                                                                                                                                                        ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_TRIGGER_IN_ENABLED=0                                                                                                                                                                     ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_ADVANCED_TRIGGER_ENTITY=basic,1,                                                                                                                                                         ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_TRIGGER_LEVEL_PIPELINE=1                                                                                                                                                                 ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_ENABLE_ADVANCED_TRIGGER=0                                                                                                                                                                ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_DATA_BITS=48                                                                                                                                                                             ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_TRIGGER_BITS=48                                                                                                                                                                          ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_INVERSION_MASK_LENGTH=169                                                                                                                                                                ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_NODE_CRC_LOWORD=63372                                                                                                                                                                    ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_NODE_CRC_HIWORD=44262                                                                                                                                                                    ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0                                                                                                                                                ; --            ; --          ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT      ; SLD_ATTRIBUTE_MEM_MODE=OFF                                                                                                                                                                   ; --            ; --          ; auto_signaltap_0 ;
+; USE_GENERATED_PHYSICAL_CONSTRAINTS ; Off                                                                                                                                                                                          ; --            ; --          ; eda_palace       ;
+; USE_SIGNALTAP_FILE                 ; stp1.stp                                                                                                                                                                                     ; --            ; --          ; --               ;
++------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+-------------+------------------+
+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+; Flow Elapsed Time                                                                                                           ;
++-------------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Module Name             ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
++-------------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Analysis & Synthesis    ; 00:00:12     ; 1.0                     ; 261 MB              ; 00:00:11                           ;
+; Fitter                  ; 00:00:29     ; 1.1                     ; 469 MB              ; 00:00:28                           ;
+; Assembler               ; 00:00:15     ; 1.0                     ; 432 MB              ; 00:00:13                           ;
+; Classic Timing Analyzer ; 00:00:01     ; 1.0                     ; 189 MB              ; 00:00:01                           ;
+; Total                   ; 00:00:57     ; --                      ; --                  ; 00:00:53                           ;
++-------------------------+--------------+-------------------------+---------------------+------------------------------------+
+
+
++------------------------------------------------------------------------------------------+
+; Flow OS Summary                                                                          ;
++-------------------------+------------------+---------------+------------+----------------+
+; Module Name             ; Machine Hostname ; OS Name       ; OS Version ; Processor type ;
++-------------------------+------------------+---------------+------------+----------------+
+; Analysis & Synthesis    ; 2-4              ; Windows Vista ; 6.1        ; x86_64         ;
+; Fitter                  ; 2-4              ; Windows Vista ; 6.1        ; x86_64         ;
+; Assembler               ; 2-4              ; Windows Vista ; 6.1        ; x86_64         ;
+; Classic Timing Analyzer ; 2-4              ; Windows Vista ; 6.1        ; x86_64         ;
++-------------------------+------------------+---------------+------------+----------------+
+
+
+------------
+; Flow Log ;
+------------
+quartus_map --read_settings_files=on --write_settings_files=off MultiFunctionSampProc -c MultiFunctionSampProc
+quartus_fit --read_settings_files=off --write_settings_files=off MultiFunctionSampProc -c MultiFunctionSampProc
+quartus_asm --read_settings_files=off --write_settings_files=off MultiFunctionSampProc -c MultiFunctionSampProc
+quartus_tan --read_settings_files=off --write_settings_files=off MultiFunctionSampProc -c MultiFunctionSampProc --timing_analysis_only
+
+
+

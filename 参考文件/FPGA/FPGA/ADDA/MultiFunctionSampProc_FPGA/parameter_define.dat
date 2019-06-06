@@ -1,0 +1,20 @@
+/////////////////////////////////////////////////////////////////////////////////
+// 文件属性：		模块文件
+// 文件功能：		参数定义模块
+// 公司: 			上海宇志通信技术有限公司
+// 工程师: 	   		XLX
+// 创建日期:        2011年08月15日 
+// 项目名:   		MultiFunctionSampProc
+// 目标器件: 		EP2S60F1020I4
+// 工具版本:  		QII7.2
+// 软件版本：		V1.1
+// 额外标注: 
+/////////////////////////////////////////////////////////////////////////////////
+
+parameter	FREQ_CLK				=	12500000;	//主时钟输入频率
+parameter	EDATA_WIDTH				=	32;			//扩展数据总线位宽    
+parameter	ADC_WIDTH				=	14;			//ADC位宽
+parameter	CARRIER_NCO_WIDTH		=	32;			//载波NCO频率控制字宽度
+parameter	CARRIER_NCO_BIT_WIDTH	=	14;			//载波NCO位宽，即正余弦输出宽度
+parameter	CARRIER_NCO_ADDR_WIDTH	=	10;			//载波NCO地址宽度
+parameter	NUM_SIGNAL_CHANNEL		=	8;			//信号源通道个数

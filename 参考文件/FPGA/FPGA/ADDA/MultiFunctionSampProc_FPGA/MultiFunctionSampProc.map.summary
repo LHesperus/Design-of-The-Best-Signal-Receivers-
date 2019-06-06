@@ -1,0 +1,15 @@
+Analysis & Synthesis Status : Successful - Thu May 24 16:29:33 2018
+Quartus II Version : 9.0 Build 132 02/25/2009 SJ Full Version
+Revision Name : MultiFunctionSampProc
+Top-level Entity Name : MultiFunctionSampProc
+Family : Stratix II
+Logic utilization : N/A
+    Combinational ALUTs : 753
+    Dedicated logic registers : 1,395
+Total registers : 1395
+Total pins : 194
+Total virtual pins : 0
+Total block memory bits : 212,992
+DSP block 9-bit elements : 0
+Total PLLs : 1
+Total DLLs : 0

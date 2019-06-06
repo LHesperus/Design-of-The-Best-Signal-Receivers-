@@ -1,0 +1,17 @@
+Fitter Status : Successful - Thu May 24 16:30:04 2018
+Quartus II Version : 9.0 Build 132 02/25/2009 SJ Full Version
+Revision Name : MultiFunctionSampProc
+Top-level Entity Name : MultiFunctionSampProc
+Family : Stratix II
+Device : EP2S90F1020I4
+Timing Models : Final
+Logic utilization : 2 %
+    Combinational ALUTs : 755 / 72,768 ( 1 % )
+    Dedicated logic registers : 1,395 / 72,768 ( 2 % )
+Total registers : 1395
+Total pins : 194 / 759 ( 26 % )
+Total virtual pins : 0
+Total block memory bits : 212,992 / 4,520,448 ( 5 % )
+DSP block 9-bit elements : 0 / 384 ( 0 % )
+Total PLLs : 1 / 12 ( 8 % )
+Total DLLs : 0 / 2 ( 0 % )

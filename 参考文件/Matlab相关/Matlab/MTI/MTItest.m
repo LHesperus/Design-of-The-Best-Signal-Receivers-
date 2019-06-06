@@ -142,4 +142,18 @@ figure(8),plot(abs(cfar_result));
 grid on;xlabel('距离单元');ylabel('通道数');zlabel(' 幅度');title('CFAR结果');
 
 
- 
+figure
+subplot(4,1,1)
+plot(real(pc(1,:)))
+subplot(4,1,2)
+plot(imag(pc(1,:)))
+subplot(4,1,3)
+plot(real(pc(2,:)))
+subplot(4,1,4)
+plot(imag(pc(2,:)))
+
+figure
+subplot(2,1,1)
+plot(real(pc(1,:))-real(pc(2,:)))
+subplot(2,1,2)
+plot(imag(pc(1,:))-imag(pc(2,:)))

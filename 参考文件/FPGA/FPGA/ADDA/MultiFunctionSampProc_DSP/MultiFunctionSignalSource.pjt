@@ -1,0 +1,36 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="F:\xlx\Project\Satelite Navigation\GNSS_OEM_KePan\MultiFunctionSignalSource\DSP_2\MultiFunctionSignalSource\"
+ProjectType=Executable
+CPUFamily=TMS320C67XX
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Tool="Linker"
+Config="Debug"
+Config="Release"
+
+[Source Files]
+Source="MultiFunctionSignalSource.c"
+Source="vectors.asm"
+Source="MultiFunctionSignalSource.cmd"
+
+["Compiler" Settings: "Debug"]
+Options=-g -fr"$(Proj_dir)\Debug" -d"CHIP_6713" -mv6700
+
+["Compiler" Settings: "Release"]
+Options=-o3 -fr"$(Proj_dir)\Release" -mv6700
+
+["Linker" Settings: "Debug"]
+Options=-c -ec_int00 -heap2000 -m".\Debug\MultiFunctionSignalSource.map" -o".\Debug\MultiFunctionSignalSource.out" -stack12000 -w -x -l"csl6713.lib" -l"rts6700.lib"
+
+["Linker" Settings: "Release"]
+Options=-c -m".\Release\MultiFunctionSignalSource.map" -o".\Release\MultiFunctionSignalSource.out" -w -x
+
+["MultiFunctionSignalSource.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["MultiFunctionSignalSource.cmd" Settings: "Release"]
+LinkOrder=1
+

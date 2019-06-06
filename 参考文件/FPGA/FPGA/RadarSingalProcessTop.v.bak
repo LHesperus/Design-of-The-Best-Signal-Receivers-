@@ -1,0 +1,238 @@
+
+
+module RadarSingalProcessTop(
+	Clk_25, 
+	Clk_100, 
+	Da1_clk, 
+	Da2_clk, 
+	Da3_clk, 
+	Da4_clk, 
+	CH0_I_Data_out, 
+	CH0_Q_Data_out, 
+	CH1_I_Data_out,
+	CH1_Q_Data_out,
+	Prf_out);
+   input         Clk_25;
+   output        Clk_100;
+   output        Da1_clk;
+   output        Da2_clk;
+   output        Da3_clk;
+   output        Da4_clk;
+   output [13:0] CH0_I_Data_out;
+   output [13:0] CH0_Q_Data_out;
+   output [13:0] CH1_I_Data_out;
+   output [13:0] CH1_Q_Data_out;
+   output        Prf_out;
+   reg           Rst;
+   reg [3:0]     Rst_cont;
+   wire          Clk_160;
+   wire          Clk_40;
+   reg [10:0]    COnt;
+   wire [15:0]   Noise;
+   reg [11:0]    Noise_temp;
+   reg [11:0]    Add;
+   reg [11:0]    Data_in;
+   wire [11:0]   Lfm_data_out;
+   reg           Prf_in;
+   wire [19:0]   DDC_Data_I_out;
+   wire [19:0]   DDC_Data_Q_out;
+   wire          DDC_Prf_out;
+   wire [33:0]   PC_Data_I_out;
+   wire [33:0]   PC_Data_Q_out;
+   wire          PC_Prf_out;
+   wire [32:0]   Chongpai_Data_I_out;
+   wire [32:0]   Chongpai_Data_Q_out;
+   wire          Chongpai_Prf_out;
+   wire [35:0]   Mti_Data_I_out;
+   wire [35:0]   Mti_Data_Q_out;
+   wire          Mti_Prf_out;
+   wire [35:0]   Chongpai1_Data_I_out;
+   wire [35:0]   Chongpai1_data_Q_out;
+   wire          Chongpai1_Prf_out;
+   reg [36:0]    Chongpai1_Data_I_out_delay;
+   reg [36:0]    Chongpai1_data_Q_out_delay;
+   reg           Chongpai1_Prf_out_delay;
+   wire [39:0]   Coherent_accumulation_Data_I_out;
+   wire [39:0]   Coherent_accumulation_Data_Q_out;
+   wire          Coherent_accumulation_Prf_out;
+   wire          Target_flag;
+   wire [9:0]    Taraget_gate;
+   
+   reg [31:0] PC_signalTap;
+   
+   always @(posedge Clk_25)
+   begin: Rst_U
+		begin
+			if (Rst_cont == 4'b1111)
+			begin
+				Rst_cont <= 4'b1111;
+				Rst <= 1'b0;
+			end
+			else
+			begin
+				Rst_cont <= Rst_cont + 1;
+				Rst <= 1'b1;
+			end
+		end
+   end
+   
+   PLL Pll_U(.inclk0(Clk_25), .c0(Clk_160), .c1(Clk_40), .c2(Clk_100));   //ok
+   assign Da1_clk = Clk_40;
+   assign Da2_clk = Clk_40;
+   assign Da3_clk = Clk_40;
+   assign Da4_clk = Clk_40;
+   
+   //noise2 Noise2_U(.clk80m(Clk_160), .reset_in(Rst), .noise_out(Noise));
+   
+   always @(posedge Clk_160)
+      
+      begin
+         if (Rst == 1'b1)
+         begin
+            Add <= {12{1'b1}};
+            COnt <= {11{1'b1}};
+         end
+         else
+            if (COnt >= 11'b01101111110 & COnt <= 11'b10001111101)
+            begin
+               Add <= Add + 1;
+               COnt <= COnt + 1;
+            end
+            else
+               COnt <= COnt + 1;
+      end
+   
+	always @(posedge Clk_160)
+		begin
+			if (Rst == 1'b1)
+				Prf_in <= 1'b0;
+			else
+				if (COnt == 11'b00000000010)
+					Prf_in <= 1'b1;
+				else
+					Prf_in <= 1'b0;
+		end
+   
+   GEN_LFM Lfm_u(.address(Add), .clock(Clk_160), .q(Lfm_data_out));
+   
+   always @(posedge Clk_160)
+      begin
+         if (Rst == 1'b1)
+         begin
+            Noise_temp <= {12{1'b0}};
+            Data_in <= Noise_temp;
+         end
+         else
+         begin
+            Noise_temp <= {12{1'b0}};
+            if (COnt >= 11'b01110000001 & COnt <= 11'b10010000000)
+               Data_in <= Lfm_data_out + Noise_temp;
+            else
+               Data_in <= Noise_temp;
+         end
+      end
+   
+	ddc ddc_u(
+	.Clk_160(Clk_160), 
+	.Clk_40(Clk_40), 
+	.Rst(Rst), 
+	.Prf_in(Prf_in), 
+	.Data_in(Data_in), 
+	.Data_I_out(DDC_Data_I_out), 
+	.Data_Q_out(DDC_Data_Q_out), 
+	.Prf_out(DDC_Prf_out)
+	);
+   
+   //pc PC_u(.clk_40(Clk_40), .rst(Rst), .prf_in(DDC_Prf_out), .data_i_in(DDC_Data_I_out), .data_q_in(DDC_Data_Q_out), .data_i_out(PC_Data_I_out), .data_q_out(PC_Data_Q_out), .prf_out(PC_Prf_out));
+   
+   pc PC_u(.Clk_40(Clk_40), 
+   .Rst(Rst), 
+   .Prf_in(DDC_Prf_out), 
+   .Data_I_in(DDC_Data_I_out), 
+   .Data_Q_in(DDC_Data_Q_out), 
+   .Data_I_out(PC_Data_I_out), 
+   .Data_Q_out(PC_Data_Q_out), 
+   .Prf_out(PC_Prf_out),
+   .Test_out());
+   
+   wire [31:0] PC_I_tmp;
+   wire [31:0] PC_Q_tmp;
+   wire [31:0] PC_out;
+   wire [63:0] PC_data_add_out;
+
+	mult3 mullt1_u(
+	.clock0(Clk_40),
+	.dataa_0(PC_Data_I_out),
+	.dataa_1(PC_Data_Q_out),
+	.datab_0(PC_Data_I_out),
+	.datab_1(PC_Data_Q_out),
+	.result(PC_data_add_out));
+	
+	
+	 sqrt2 sqrt2_u (
+	.clock(Clk_40),
+	.data(PC_data_add_out),
+	.result(PC_out)); 
+
+
+	
+   Chongpai Chongpai_U(
+   .Rst(Rst), 
+   .Clk_40(Clk_40), 
+   .Prf_in(PC_Prf_out), 
+   .Data_I_in(PC_Data_I_out), 
+   .Data_Q_in(PC_Data_Q_out), 
+   .Data_I_out(Chongpai_Data_I_out), 
+   .Data_Q_out(Chongpai_Data_Q_out), 
+   .Prf_out(Chongpai_Prf_out));
+   
+   mti Mti_U(
+   .Clk_40(Clk_40), 
+   .Rst(Rst), 
+   .Prf_in(Chongpai_Prf_out), 
+   .Data_I_in(Chongpai_Data_I_out), 
+   .Data_Q_in(Chongpai_Data_Q_out), 
+   .Data_I_out(Mti_Data_I_out), 
+   .Data_Q_out(Mti_Data_Q_out), 
+   .Prf_out(Mti_Prf_out));
+
+/*
+   Chongpai1 Chongpai1_U(
+   .Rst(Rst), .Clk_40(Clk_40), 
+   .Prf_in(Mti_Prf_out), 
+   .Data_I_in(Mti_Data_I_out), 
+   .Data_Q_in(Mti_Data_Q_out), 
+   .Data_I_out(Chongpai1_Data_I_out), 
+   .Data_Q_out(Chongpai1_data_Q_out), 
+   .Prf_out(Chongpai1_Prf_out));
+
+    always @(posedge Clk_40) 
+    begin
+         Chongpai1_Prf_out_delay <= Mti_Prf_out;
+         Chongpai1_Data_I_out_delay[36] <= Chongpai1_Data_I_out[35];
+         Chongpai1_Data_I_out_delay[35:0] <= Chongpai1_Data_I_out[35:0];
+         Chongpai1_data_Q_out_delay[36] <= Chongpai1_data_Q_out[35];
+         Chongpai1_data_Q_out_delay[35:0] <= Chongpai1_data_Q_out[35:0];
+    end
+   
+   Coherent_accumulation Coherent_accumulation_U(.Rst(Rst), 
+   .Prf_in(Chongpai1_Prf_out_delay), 
+   .Clk_40(Clk_40), 
+   .Data_I_in(Chongpai1_Data_I_out_delay), 
+   .Data_Q_in(Chongpai1_data_Q_out_delay), 
+   .Data_I_out(Coherent_accumulation_Data_I_out), 
+   .Data_Q_out(Coherent_accumulation_Data_Q_out), 
+   .Prf_out(Coherent_accumulation_Prf_out));
+   
+  // CA_CFAR CA_CFAR_U(.clk_40(Clk_40), .rst(Rst), .prf_in(Coherent_accumulation_Prf_out), .t(16'b0000000000100000), .data_i_in(Coherent_accumulation_Data_I_out), .data_q_in(Coherent_accumulation_Data_Q_out), .target_flag(Target_flag), .taraget_gate(Taraget_gate), .prf_out(Prf_out));
+   assign CH0_I_Data_out = DDC_Data_I_out[19:6];
+   assign CH0_Q_Data_out = DDC_Data_Q_out[19:6];
+   assign CH1_Q_Data_out[13] = PC_Data_Q_out[32];
+   assign CH1_Q_Data_out[12:0] = PC_Data_Q_out[30:18];
+   
+   assign CH1_I_Data_out[13] = Coherent_accumulation_Data_I_out[39];
+   assign CH1_I_Data_out[12:0] = Coherent_accumulation_Data_I_out[29:17];
+	
+	*/
+
+endmodule

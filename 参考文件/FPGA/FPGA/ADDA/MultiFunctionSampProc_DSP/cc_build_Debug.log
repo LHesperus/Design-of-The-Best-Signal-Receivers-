@@ -1,0 +1,10 @@
+-------------------  MultiFunctionSignalSource.pjt - Debug  -------------------
+[MultiFunctionSignalSource.c] "C:\CCStudio_v3.1\C6000\cgtools\bin\cl6x" -g -fr"F:/tsdfsdfasdf/MultiFunctionSampProc_DSP/Debug" -d"CHIP_6713" -mv6700 -@"Debug.lkf" "MultiFunctionSignalSource.c"
+
+[vectors.asm] "C:\CCStudio_v3.1\C6000\cgtools\bin\cl6x" -g -fr"F:/tsdfsdfasdf/MultiFunctionSampProc_DSP/Debug" -d"CHIP_6713" -mv6700 -@"Debug.lkf" "vectors.asm"
+
+[Linking...] "C:\CCStudio_v3.1\C6000\cgtools\bin\cl6x" -@"Debug.lkf"
+<Linking>
+
+Build Complete,
+  0 Errors, 0 Warnings, 0 Remarks.

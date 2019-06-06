@@ -1,0 +1,33 @@
+<internal_error>
+	<executable>quartus_map.exe</executable>
+	<sub_system>AMERGE</sub_system>
+	<file>/quartus/atm/amerge/amerge_kpt_op.cpp</file>
+	<line>220</line>
+	<callstack>
+	0x0b85d9b7: atm_amerge + 0x3d9b7 (amerge_mini_merge + 0x3a5d7)
+	0x00a930d5: ccl_cfg_ini + 0x30d5 (?cfg_force_qexe_mode_off@@YIXXZ + 0x1e15)
+	0x0b85d152: atm_amerge + 0x3d152 (amerge_mini_merge + 0x39d72)
+	0x0b86405d: atm_amerge + 0x4405d (amerge_mini_merge + 0x40c7d)
+	0x0b82321d: atm_amerge + 0x321d
+	0x0b8233f1: atm_amerge + 0x33f1 (amerge_mini_merge + 0x11)
+	0x00412d94: quartus_map + 0x12d94
+	0x00334b0d: ccl_mem + 0x4b0d (?splay_heap@MEM_SEGMENT_INTERNAL@@AAIPAVMEM_MEGA_PAGE@@PAX@Z + 0x14d)
+	0x0033a128: ccl_mem + 0xa128 (?mem_realloc_wrapper@@YIPAXPAXIPAVMEM_TRACKER_THUNK@@PBD@Z + 0x188)
+	0x004185fa: quartus_map + 0x185fa
+	0x00335580: ccl_mem + 0x5580 (mem_out_of_memory + 0x4f0)
+	0x003394f2: ccl_mem + 0x94f2 (?locked_allocate@MEM_SEGMENT_INTERNAL@@AAIPAXPADKKPAVMEM_TRACKER_DATA@@@Z + 0x62)
+	0x00334b0d: ccl_mem + 0x4b0d (?splay_heap@MEM_SEGMENT_INTERNAL@@AAIPAVMEM_MEGA_PAGE@@PAX@Z + 0x14d)
+	0x00409d3b: quartus_map + 0x9d3b
+	0x0041ab09: quartus_map + 0x1ab09
+	0x02eece32: comp_qexe + 0xce32 (?qexe_get_command_line@@YIPBDXZ + 0x3a2)
+	0x02f438e3: comp_qcu + 0x38e3 (??4QCU_ACF_SETTING@@QAEAAU0@ABU0@@Z + 0x11e3)
+	0x02f47c29: comp_qcu + 0x7c29 (?check_license@QCU_FRAMEWORK@@UAI_NXZ + 0x139)
+	0x02eefbbd: comp_qexe + 0xfbbd (?qexe_process_cmdline_arguments@@YI_NPAVQEXE_CMDLINE@@HPAPBD@Z + 0x34d)
+	</callstack>
+	<error>cmp_merge_kpt_db</error>
+	<date>Mon Jun 11 09:30:29 2018</date>
+	<version>Quartus II Version 9.0 Build 132 02/25/2009 SJ Full Version</version>
+	<full_error>cmp_merge_kpt_db
+Quartus II Version 9.0 Build 132 02/25/2009 SJ Full Version </full_error>
+</internal_error>
+

@@ -1,0 +1,16 @@
+Analysis & Elaboration Status : Successful - Thu Jun 06 21:04:31 2019
+Quartus II 64-Bit Version : 13.0.1 Build 232 06/12/2013 SP 1 SJ Full Version
+Revision Name : Receiver
+Top-level Entity Name : Receiver
+Family : Stratix III
+Logic utilization : N/A until Partition Merge
+    Combinational ALUTs : N/A until Partition Merge
+    Memory ALUTs : N/A until Partition Merge
+    Dedicated logic registers : N/A until Partition Merge
+Total registers : N/A until Partition Merge
+Total pins : N/A until Partition Merge
+Total virtual pins : N/A until Partition Merge
+Total block memory bits : N/A until Partition Merge
+DSP block 18-bit elements : N/A until Partition Merge
+Total PLLs : N/A until Partition Merge
+Total DLLs : N/A until Partition Merge

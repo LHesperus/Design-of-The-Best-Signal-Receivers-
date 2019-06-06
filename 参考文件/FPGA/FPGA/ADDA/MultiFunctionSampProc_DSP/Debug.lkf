@@ -1,0 +1,4 @@
+-z -c -ec_int00 -heap2000 -m"./Debug/MultiFunctionSignalSource.map" -o"./Debug/MultiFunctionSignalSource.out" -stack12000 -w -x -i"C:/CCStudio_v3.1/C6000/rtdx/lib" -i"C:/CCStudio_v3.1/C6000/csl/lib" -i"C:/CCStudio_v3.1/C6000/xdais/lib" -i"C:/CCStudio_v3.1/C6000/bios/lib" -i"C:/CCStudio_v3.1/C6000/cgtools/lib" -l"csl6713.lib" -l"rts6700.lib"
+"F:\tsdfsdfasdf\MultiFunctionSampProc_DSP\MultiFunctionSignalSource.cmd"
+"F:\tsdfsdfasdf\MultiFunctionSampProc_DSP\Debug\MultiFunctionSignalSource.obj"
+"F:\tsdfsdfasdf\MultiFunctionSampProc_DSP\Debug\vectors.obj"

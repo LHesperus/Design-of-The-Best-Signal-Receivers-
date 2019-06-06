@@ -1,0 +1,76 @@
+--------------------------------------------------------------------------------------
+Timing Analyzer Summary
+--------------------------------------------------------------------------------------
+
+Type           : Worst-case tsu
+Slack          : N/A
+Required Time  : None
+Actual Time    : 1.205 ns
+From           : altera_internal_jtag~TMSUTAP
+To             : sld_hub:auto_hub|shadow_irf_reg[1][2]
+From Clock     : --
+To Clock       : altera_internal_jtag~TCKUTAP
+Failed Paths   : 0
+
+Type           : Worst-case tpd
+Slack          : N/A
+Required Time  : None
+Actual Time    : 2.267 ns
+From           : altera_internal_jtag~TDO
+To             : altera_reserved_tdo
+From Clock     : --
+To Clock       : --
+Failed Paths   : 0
+
+Type           : Worst-case th
+Slack          : N/A
+Required Time  : None
+Actual Time    : 1.427 ns
+From           : altera_internal_jtag~TDIUTAP
+To             : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|VELJ8121:JDCF0099|DJFL8584[3]
+From Clock     : --
+To Clock       : altera_internal_jtag~CLKDRUSER
+Failed Paths   : 0
+
+Type           : Clock Setup: 'altera_internal_jtag~TCKUTAP'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 234.63 MHz ( period = 4.262 ns )
+From           : sld_hub:auto_hub|irsr_reg[2]
+To             : sld_hub:auto_hub|tdo
+From Clock     : altera_internal_jtag~TCKUTAP
+To Clock       : altera_internal_jtag~TCKUTAP
+Failed Paths   : 0
+
+Type           : Clock Setup: 'altera_internal_jtag~CLKDRUSER'
+Slack          : N/A
+Required Time  : None
+Actual Time    : 544.37 MHz ( period = 1.837 ns )
+From           : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|VELJ8121:JDCF0099|AJQN5180[0]
+To             : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|VELJ8121:JDCF0099|AJQN5180[3]
+From Clock     : altera_internal_jtag~CLKDRUSER
+To Clock       : altera_internal_jtag~CLKDRUSER
+Failed Paths   : 0
+
+Type           : Clock Setup: 'altera_internal_jtag~UPDATEUSER'
+Slack          : N/A
+Required Time  : None
+Actual Time    : Restricted to 711.24 MHz ( period = 1.406 ns )
+From           : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|XWDE0671[2]
+To             : pzdyqx:nabboc|pzdyqx_impl:pzdyqx_impl_inst|XWDE0671[1]
+From Clock     : altera_internal_jtag~UPDATEUSER
+To Clock       : altera_internal_jtag~UPDATEUSER
+Failed Paths   : 0
+
+Type           : Total number of failed paths
+Slack          : 
+Required Time  : 
+Actual Time    : 
+From           : 
+To             : 
+From Clock     : 
+To Clock       : 
+Failed Paths   : 0
+
+--------------------------------------------------------------------------------------
+

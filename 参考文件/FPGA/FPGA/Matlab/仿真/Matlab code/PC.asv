@@ -1,0 +1,107 @@
+clc;
+close all
+
+% Lfm
+N=256;
+n=0:255;
+f0=120e6;
+B=40e6;
+tao=1.6e-6;
+fs=160e6;
+t=-tao/2:1/fs:(tao/2-1/fs);
+y=cos(2*pi*(f0*t+(B/2/tao*(t.^2))));
+y=y/max(y);
+y=y*(2^11-1);
+y=floor(y);
+
+
+
+% Filter_coefficient
+Num=Num/max(abs(Num));
+Num=Num*(2^7-1);
+Num=floor(Num);
+a0=Num(1,1:4:64);
+a1=Num(1,2:4:64);
+a2=Num(1,3:4:64);
+a3=Num(1,4:4:64);
+
+
+
+y=[zeros(1,19872),y,zeros(1,19872)];
+for i=1:16
+    y((40000*(i-1)+1):40000*i)=y(1:40000);
+end 
+% DDC
+y0=y(4:4:end);
+y1=y(3:4:end);
+y2=y(2:4:end);
+y3=y(1:4:end);
+
+y0_result=conv(y0,a0);
+y1_result=conv(y1,a1);
+y2_result=conv(y2,a2);
+y3_result=conv(y3,a3);
+
+Len=length(y0_result);
+Y_I=y0_result-y2_result(1,1:Len);
+Y_Q=y3_result(1,1:Len)-y1_result(1,1:Len);
+
+Y_I=Y_I/max(abs([Y_I,Y_Q]));
+Y_I=Y_I*(2^19-1);
+Y_I=floor(Y_I);
+Y_Q=Y_Q/max(abs([Y_I,Y_Q]));
+Y_Q=Y_Q*(2^19-1);
+Y_Q=floor(Y_Q);
+
+B=40e6;
+tao=1.6e-6;
+fs=40e6;
+t=(-tao/2):1/fs:(tao/2-1/fs);
+PC_I=cos(2*pi*(B/2/tao*(t.^2)));
+PC_Q=-sin(2*pi*(B/2/tao*(t.^2)));
+
+PC_coef_I=(PC_I);
+PC_coef_Q=(PC_Q);
+
+max_coef=max(abs([PC_coef_I,PC_coef_Q]));
+
+PC_coef_I=PC_coef_I/max_coef;
+PC_coef_I=PC_coef_I*(2^7-1);
+PC_coef_I=floor(PC_coef_I);
+PC_coef_Q=PC_coef_Q/max_coef;
+PC_coef_Q=PC_coef_Q*(2^7-1);
+PC_coef_Q=floor(PC_coef_Q);
+% PC_I_output=conv(PC_coef_I,PC_I)-conv(PC_coef_Q,PC_Q);
+% PC_Q_output=conv(PC_coef_Q,PC_I)+conv(PC_coef_I,PC_Q);
+
+PC_I_output=conv(PC_coef_I,Y_I)-conv(PC_coef_Q,Y_Q);
+PC_Q_output=conv(PC_coef_Q,Y_I)+conv(PC_coef_I,Y_Q);
+a0=conv(PC_coef_I,Y_I);
+a3=conv(PC_coef_Q,Y_Q);
+a1=conv(PC_coef_Q,Y_I);
+a2=conv(PC_coef_I,Y_Q);
+figure(8);
+% plot(a0);
+% hold on;
+% plot(a1,'r');
+% hold on;
+% plot(a2,'g');
+% hold on;
+% plot(a3,'b');
+% figure(1);
+% plot(Y_I);
+% hold on;
+% plot(Y_Q,'r');
+
+figure(2);
+plot(PC_I_output);
+figure(3)
+plot(PC_Q_output,'r');
+
+% Coherent accumulation
+Coh_I_output
+% figure(4);
+% a=fftshift(fft(Y_I+j*Y_Q));
+% N=length(a);
+% f=-fs/2:fs/N:(fs/2-fs/N);
+% plot(f,abs(a));

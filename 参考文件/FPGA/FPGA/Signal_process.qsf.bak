@@ -1,0 +1,191 @@
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 1991-2012 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus II 32-bit
+# Version 12.0 Build 178 05/31/2012 SJ Full Version
+# Date created = 23:35:18  April 09, 2013
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		Signal_process_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
+#		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus II software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
+
+
+set_global_assignment -name FAMILY "Stratix II"
+set_global_assignment -name DEVICE EP2S90F1020I4
+set_global_assignment -name TOP_LEVEL_ENTITY RadarSingalProcessTop   
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 12.0
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "23:35:18  APRIL 09, 2013"
+set_global_assignment -name LAST_QUARTUS_VERSION "9.0 SP2"
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim (VHDL)"
+set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT VHDL -section_id eda_simulation
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH Signal_process -section_id eda_simulation
+set_global_assignment -name EDA_TEST_BENCH_NAME Signal_process -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id Signal_process
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME Signal_process -section_id Signal_process
+set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
+set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_location_assignment PIN_AM16 -to Clk_25
+set_global_assignment -name ENABLE_SIGNALTAP ON
+set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
+set_global_assignment -name EDA_TEST_BENCH_FILE simulation/modelsim/Signal_process.vht -section_id Signal_process
+set_location_assignment PIN_V2 -to Da1_clk
+set_location_assignment PIN_Y5 -to Da2_clk
+set_location_assignment PIN_AB7 -to Da3_clk
+set_location_assignment PIN_AD8 -to Da4_clk
+set_location_assignment PIN_Y3 -to CH0_I_Data_out[13]
+set_location_assignment PIN_Y2 -to CH0_I_Data_out[12]
+set_location_assignment PIN_W8 -to CH0_I_Data_out[11]
+set_location_assignment PIN_W7 -to CH0_I_Data_out[10]
+set_location_assignment PIN_W6 -to CH0_I_Data_out[9]
+set_location_assignment PIN_W5 -to CH0_I_Data_out[8]
+set_location_assignment PIN_W4 -to CH0_I_Data_out[7]
+set_location_assignment PIN_W2 -to CH0_I_Data_out[6]
+set_location_assignment PIN_W1 -to CH0_I_Data_out[5]
+set_location_assignment PIN_V7 -to CH0_I_Data_out[4]
+set_location_assignment PIN_V6 -to CH0_I_Data_out[3]
+set_location_assignment PIN_V5 -to CH0_I_Data_out[2]
+set_location_assignment PIN_V4 -to CH0_I_Data_out[1]
+set_location_assignment PIN_V3 -to CH0_I_Data_out[0]
+set_location_assignment PIN_AB5 -to CH0_Q_Data_out[13]
+set_location_assignment PIN_AB4 -to CH0_Q_Data_out[12]
+set_location_assignment PIN_AB3 -to CH0_Q_Data_out[11]
+set_location_assignment PIN_AB2 -to CH0_Q_Data_out[10]
+set_location_assignment PIN_AB1 -to CH0_Q_Data_out[9]
+set_location_assignment PIN_AA9 -to CH0_Q_Data_out[8]
+set_location_assignment PIN_AA8 -to CH0_Q_Data_out[7]
+set_location_assignment PIN_AA7 -to CH0_Q_Data_out[6]
+set_location_assignment PIN_AA6 -to CH0_Q_Data_out[5]
+set_location_assignment PIN_AA4 -to CH0_Q_Data_out[4]
+set_location_assignment PIN_AA3 -to CH0_Q_Data_out[3]
+set_location_assignment PIN_AA2 -to CH0_Q_Data_out[2]
+set_location_assignment PIN_AA1 -to CH0_Q_Data_out[1]
+set_location_assignment PIN_Y6 -to CH0_Q_Data_out[0]
+set_location_assignment PIN_AD6 -to CH1_I_Data_out[13]
+set_location_assignment PIN_AD4 -to CH1_I_Data_out[12]
+set_location_assignment PIN_AD3 -to CH1_I_Data_out[11]
+set_location_assignment PIN_AD2 -to CH1_I_Data_out[10]
+set_location_assignment PIN_AD1 -to CH1_I_Data_out[9]
+set_location_assignment PIN_AC9 -to CH1_I_Data_out[8]
+set_location_assignment PIN_AC8 -to CH1_I_Data_out[7]
+set_location_assignment PIN_AC7 -to CH1_I_Data_out[6]
+set_location_assignment PIN_AC6 -to CH1_I_Data_out[5]
+set_location_assignment PIN_AC4 -to CH1_I_Data_out[4]
+set_location_assignment PIN_AC3 -to CH1_I_Data_out[3]
+set_location_assignment PIN_AC2 -to CH1_I_Data_out[2]
+set_location_assignment PIN_AC1 -to CH1_I_Data_out[1]
+set_location_assignment PIN_AB8 -to CH1_I_Data_out[0]
+set_location_assignment PIN_AG1 -to CH1_Q_Data_out[13]
+set_location_assignment PIN_AF6 -to CH1_Q_Data_out[12]
+set_location_assignment PIN_AF5 -to CH1_Q_Data_out[11]
+set_location_assignment PIN_AF4 -to CH1_Q_Data_out[10]
+set_location_assignment PIN_AF3 -to CH1_Q_Data_out[9]
+set_location_assignment PIN_AF2 -to CH1_Q_Data_out[8]
+set_location_assignment PIN_AF1 -to CH1_Q_Data_out[7]
+set_location_assignment PIN_AE6 -to CH1_Q_Data_out[6]
+set_location_assignment PIN_AE5 -to CH1_Q_Data_out[5]
+set_location_assignment PIN_AE4 -to CH1_Q_Data_out[4]
+set_location_assignment PIN_AE3 -to CH1_Q_Data_out[3]
+set_location_assignment PIN_AE2 -to CH1_Q_Data_out[2]
+set_location_assignment PIN_AE1 -to CH1_Q_Data_out[1]
+set_location_assignment PIN_AD9 -to CH1_Q_Data_out[0]
+set_global_assignment -name VHDL_FILE noise1/shift31_4_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift31_3_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift31_2_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift31_1_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift29_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift28_3_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift28_2_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift28_1_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift27_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift26_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift25_2_2.vhd
+set_global_assignment -name VHDL_FILE noise1/shift25_1_2.vhd
+set_global_assignment -name VHDL_FILE noise1/pack_noise2.vhd
+set_global_assignment -name VHDL_FILE noise1/noise2.vhd
+set_global_assignment -name VHDL_TEST_BENCH_FILE simulation/modelsim/Signal_process.vht
+set_global_assignment -name VHDL_FILE Signal_process.vhd
+set_global_assignment -name VHDL_FILE DDC.vhd
+set_global_assignment -name QIP_FILE Fir_16_0.qip
+set_global_assignment -name SIP_FILE Fir_16_0.sip
+set_global_assignment -name QIP_FILE Fir_16_1.qip
+set_global_assignment -name SIP_FILE Fir_16_1.sip
+set_global_assignment -name QIP_FILE Fir_16_2.qip
+set_global_assignment -name SIP_FILE Fir_16_2.sip
+set_global_assignment -name QIP_FILE Fir_16_3.qip
+set_global_assignment -name SIP_FILE Fir_16_3.sip
+set_global_assignment -name QIP_FILE Add.qip
+set_global_assignment -name VHDL_FILE PC.vhd
+set_global_assignment -name VHDL_FILE Chongpai.vhd
+set_global_assignment -name QIP_FILE Ram0_I.qip
+set_global_assignment -name QIP_FILE Ram0_Q.qip
+set_global_assignment -name QIP_FILE Ram1_I.qip
+set_global_assignment -name QIP_FILE Ram1_Q.qip
+set_global_assignment -name VHDL_FILE Mti.vhd
+set_global_assignment -name VHDL_FILE Coherent_accumulation.vhd
+set_global_assignment -name QIP_FILE Coherent_Add.qip
+set_global_assignment -name VHDL_FILE Chongpai1.vhd
+set_global_assignment -name QIP_FILE Chongpai_Ram0_I.qip
+set_global_assignment -name QIP_FILE Chongpai1_Ram0_Q.qip
+set_global_assignment -name QIP_FILE Chongpai_Ram1_I.qip
+set_global_assignment -name QIP_FILE Chongpai1_Ram1_Q.qip
+set_global_assignment -name QIP_FILE Lfm.qip
+set_global_assignment -name HEX_FILE All_zeros.hex
+set_global_assignment -name QIP_FILE Compare.qip
+set_global_assignment -name QIP_FILE Conv_float.qip
+set_global_assignment -name QIP_FILE Conv_integer.qip
+set_global_assignment -name QIP_FILE Float_add.qip
+set_global_assignment -name QIP_FILE Mult_f.qip
+set_global_assignment -name QIP_FILE Mult_i.qip
+set_global_assignment -name QIP_FILE Par_add.qip
+set_global_assignment -name QIP_FILE Sqrt.qip
+set_global_assignment -name VHDL_FILE CA_CFAR.vhd
+set_global_assignment -name QIP_FILE Fir_I_0.qip
+set_global_assignment -name SIP_FILE Fir_I_0.sip
+set_global_assignment -name QIP_FILE Fir_I_1.qip
+set_global_assignment -name SIP_FILE Fir_I_1.sip
+set_global_assignment -name QIP_FILE Fir_Q_0.qip
+set_global_assignment -name SIP_FILE Fir_Q_0.sip
+set_global_assignment -name QIP_FILE Fir_Q_1.qip
+set_global_assignment -name SIP_FILE Fir_Q_1.sip
+set_global_assignment -name QIP_FILE pll.qip
+set_global_assignment -name HEX_FILE Lfm_rom.hex
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name SIGNALTAP_FILE Mti.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
